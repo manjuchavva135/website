@@ -1,0 +1,18 @@
+{
+  "name": "public-finance-platform",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.12.0",
+  "scripts": {
+    "dev:web": "pnpm --filter @public-finance/web dev",
+    "build:web": "pnpm --filter @public-finance/web build",
+    "lint:web": "pnpm --filter @public-finance/web lint",
+    "test:web": "pnpm --filter @public-finance/web test",
+    "format:web": "pnpm --filter @public-finance/web format",
+    "lint:py": "ruff check apps/api apps/worker packages/shared-py",
+    "format:py": "black apps/api apps/worker packages/shared-py",
+    "test:py": "pytest",
+    "lint": "pnpm lint:web ; pnpm lint:py",
+    "test": "pnpm test:web ; pnpm test:py"
+  }
+}

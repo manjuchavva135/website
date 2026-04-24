@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shared-py"
+version = "0.1.0"
+description = "Shared backend utilities for the public-finance platform"
+requires-python = ">=3.11"
+dependencies = [
+  "boto3==1.35.65",
+  "pydantic-settings==2.6.1"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["shared_py*"]
