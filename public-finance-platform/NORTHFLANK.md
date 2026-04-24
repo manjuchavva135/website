@@ -8,8 +8,8 @@ and FastAPI services; ingestion tasks need a long-running worker with Redis.
 Create a Northflank combined service from the GitHub repository:
 
 - Build type: `Dockerfile`
-- Build context / working directory: `/public-finance-platform`
-- Dockerfile path: `/apps/worker/Dockerfile`
+- Build context: `/public-finance-platform`
+- Dockerfile location: `/public-finance-platform/apps/worker/Dockerfile`
 - Public ports: none
 - Runtime command: use the image `CMD`
 - Instances: start with `1`

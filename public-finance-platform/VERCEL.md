@@ -125,5 +125,6 @@ celery -A worker.celery_app:celery_app --workdir apps/worker worker --loglevel=i
 
 The worker must use the same `DATABASE_URL`, `CELERY_BROKER_URL`, `CELERY_RESULT_BACKEND`, and S3-compatible object-storage variables as production API.
 
-For Northflank, use `apps/worker/Dockerfile` with build context
+For Northflank, use Dockerfile location
+`/public-finance-platform/apps/worker/Dockerfile` with build context
 `/public-finance-platform`. See `NORTHFLANK.md`.
