@@ -65,15 +65,28 @@ class RbiBorrowingIngestionService:
 
         pdf_links = extract_pdf_links_from_html(outcome.text, base_url=outcome.url)
         for link in pdf_links:
-            pdf_outcome = self.fetch_client.fetch(link)
-            self.metrics.pdfs_fetched += 1
-            records.extend(
-                parse_borrowing_records_from_pdf(
-                    payload=pdf_outcome.payload,
-                    source_url=pdf_outcome.url,
-                    source_family=classify_rbi_source_family(pdf_outcome.url),
+            try:
+                pdf_outcome = self.fetch_client.fetch(link)
+                self.metrics.pdfs_fetched += 1
+                if not _looks_like_pdf(pdf_outcome):
+                    raise ValueError(
+                        f"expected PDF content but received {pdf_outcome.content_type or 'unknown content type'}"
+                    )
+                records.extend(
+                    parse_borrowing_records_from_pdf(
+                        payload=pdf_outcome.payload,
+                        source_url=pdf_outcome.url,
+                        source_family=classify_rbi_source_family(pdf_outcome.url),
+                    )
                 )
-            )
+            except Exception as exc:  # noqa: BLE001
+                self.metrics.fetch_failures += 1
+                emit_pipeline_event(
+                    "rbi_pdf_skipped",
+                    source_url=spec.url,
+                    pdf_url=link,
+                    error=str(exc),
+                )
 
         if not records and source_family in {"wma_od", "framework"}:
             self.persistence.create_source_context_record(
@@ -114,3 +127,10 @@ class RbiBorrowingIngestionService:
                 self.metrics.duplicate_events += 1
             persisted += 1
         return persisted
+
+
+def _looks_like_pdf(outcome) -> bool:
+    if outcome.payload.startswith(b"%PDF-"):
+        return True
+    content_type = (outcome.content_type or "").lower()
+    return "application/pdf" in content_type

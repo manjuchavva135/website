@@ -37,6 +37,66 @@ class StubPersistence:
         return self.context_records
 
 
+def test_service_skips_broken_or_non_pdf_links_without_failing_task() -> None:
+    html = """
+    <html>
+      <body>
+        <a href="https://www.fbil.org.in/uploads/general/FBIL-SDL_Valuation_Methodology.pdf">FBIL</a>
+        <a href="https://rbidocs.rbi.org.in/rdocs/content/pdfs/ANNEX20082019_1.pdf">RBI docs</a>
+      </body>
+    </html>
+    """
+    fetcher = FailingPdfFetcher(
+        {
+            "https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=3337": FetchOutcome(
+                url="https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=3337",
+                status_code=200,
+                payload=html.encode("utf-8"),
+                text=html,
+                content_type="text/html",
+                anti_bot_signals=[],
+            ),
+            "https://rbidocs.rbi.org.in/rdocs/content/pdfs/ANNEX20082019_1.pdf": FetchOutcome(
+                url="https://rbidocs.rbi.org.in/rdocs/content/pdfs/ANNEX20082019_1.pdf",
+                status_code=200,
+                payload=b"<!DOCTYPE html><html><body>not a pdf</body></html>",
+                text="<!DOCTYPE html><html><body>not a pdf</body></html>",
+                content_type="text/html",
+                anti_bot_signals=[],
+            ),
+        }
+    )
+    persistence = StubPersistence()
+    service = RbiBorrowingIngestionService(
+        fetch_client=fetcher,
+        persistence=persistence,
+        source_specs=[
+            RbiSourceSpec(
+                source_family="framework",
+                url="https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=3337",
+            )
+        ],
+    )
+
+    result = service.run()
+
+    assert result["status"] == "ok"
+    assert result["sources"][0]["records_parsed"] == 0
+    assert result["metrics"]["fetch_failures"] == 2
+    assert persistence.context_records == 1
+
+
+class FailingPdfFetcher(StubFetcher):
+    def fetch(self, url: str) -> FetchOutcome:
+        if url == "https://www.fbil.org.in/uploads/general/FBIL-SDL_Valuation_Methodology.pdf":
+            raise httpx.HTTPStatusError(
+                "Client error '404 Not Found' for url 'https://www.fbil.org.in/uploads/general/FBIL-SDL_Valuation_Methodology.pdf'",
+                request=httpx.Request("GET", url),
+                response=httpx.Response(404, request=httpx.Request("GET", url)),
+            )
+        return super().fetch(url)
+
+
 def test_service_creates_manual_review_when_anti_bot_detected() -> None:
     anti_bot_html = (FIXTURE_DIR / "anti_bot.html").read_text(encoding="utf-8")
     fetcher = StubFetcher(
