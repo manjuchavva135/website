@@ -60,11 +60,11 @@ class Settings(BaseSettings):
     csv_cache_max_age_seconds: int = 300
     csv_cdn_cache_s_maxage_seconds: int = 1800
 
-    s3_endpoint_url: str = "http://minio:9000"
+    s3_endpoint_url: str = Field(...)
     s3_region: str = "us-east-1"
-    s3_bucket: str = "public-finance-data"
-    s3_access_key: str = "minio"
-    s3_secret_key: str = "minio123"
+    s3_bucket: str = Field(...)
+    s3_access_key: str = Field(...)
+    s3_secret_key: str = Field(...)
     s3_use_ssl: bool = False
 
     rbi_source_url: str = "https://rbi.org.in/"
