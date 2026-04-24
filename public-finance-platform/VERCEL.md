@@ -11,7 +11,9 @@ This repo is configured for Vercel Services:
 
 1. Import the repository into Vercel.
 2. Set the project Framework Preset to `Services`.
-3. Keep the root directory as the repository root.
+3. Use one of these root-directory setups:
+   - Keep the root directory as the GitHub repo root. Vercel will use `/vercel.json`, which points at `public-finance-platform/apps/*`.
+   - Or set the root directory to `public-finance-platform`. Vercel will use `public-finance-platform/vercel.json`.
 4. Configure production environment variables before the first production deploy.
 
 ## Required Environment Variables
@@ -32,8 +34,8 @@ S3_ACCESS_KEY=...
 S3_SECRET_KEY=...
 S3_USE_SSL=true
 ADMIN_API_TOKEN=...
-ADMIN_ALLOWED_EMAILS=admin@example.gov.in
-CORS_ORIGINS=https://your-project.vercel.app
+ADMIN_ALLOWED_EMAILS=["admin@example.gov.in"]
+CORS_ORIGINS=["https://your-project.vercel.app"]
 ```
 
 The Vercel entrypoint pins `API_BASE_PATH=/v1`, `AUTO_CREATE_SCHEMA=false`, and

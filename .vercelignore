@@ -1,0 +1,12 @@
+.venv
+agency-agents
+**/__pycache__
+**/.pytest_cache
+**/*.pyc
+**/*.db
+public-finance-platform/node_modules
+public-finance-platform/apps/web/.next
+public-finance-platform/apps/web/node_modules
+public-finance-platform/apps/worker/**
+public-finance-platform/infra/**
+public-finance-platform/docker-compose.yml

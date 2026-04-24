@@ -1,0 +1,14 @@
+{
+  "experimentalServices": {
+    "api": {
+      "entrypoint": "public-finance-platform/apps/api/vercel_app.py",
+      "routePrefix": "/api",
+      "memory": 1024,
+      "maxDuration": 60
+    },
+    "web": {
+      "entrypoint": "public-finance-platform/apps/web",
+      "routePrefix": "/"
+    }
+  }
+}
