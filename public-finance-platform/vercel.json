@@ -1,0 +1,14 @@
+{
+  "experimentalServices": {
+    "api": {
+      "entrypoint": "apps/api/vercel_app.py",
+      "routePrefix": "/api",
+      "memory": 1024,
+      "maxDuration": 60
+    },
+    "web": {
+      "entrypoint": "apps/web",
+      "routePrefix": "/"
+    }
+  }
+}

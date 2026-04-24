@@ -1,0 +1,11 @@
+.venv
+**/__pycache__
+**/.pytest_cache
+**/*.pyc
+**/*.db
+apps/web/.next
+apps/web/node_modules
+node_modules
+apps/worker/**
+infra/**
+docker-compose.yml

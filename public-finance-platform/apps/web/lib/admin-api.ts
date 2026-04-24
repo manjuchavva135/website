@@ -1,3 +1,5 @@
+import { buildApiUrl } from "./api-url";
+
 export type AdminCredentials = {
   email: string;
   token: string;
@@ -128,16 +130,8 @@ export type RerunParseResponse = {
 
 type FetchParams = Record<string, string | number | boolean | null | undefined>;
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-
 function buildUrl(path: string, params: FetchParams = {}): string {
-  const url = new URL(`/api/v1/admin${path}`, BASE);
-  for (const [key, value] of Object.entries(params)) {
-    if (value !== null && value !== undefined && value !== "") {
-      url.searchParams.set(key, String(value));
-    }
-  }
-  return url.toString();
+  return buildApiUrl(`/api/v1/admin${path}`, params);
 }
 
 async function adminFetch<T>(

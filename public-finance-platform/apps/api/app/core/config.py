@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     env: str = "development"
     api_host: str = "0.0.0.0"
     api_port: int = 8000
+    api_base_path: str = "/api/v1"
+    auto_create_schema: bool = True
     auto_seed_data: bool = True
     parser_version: str = "2026.04.24"
     admin_api_token: str = "dev-admin-token"
@@ -15,9 +17,7 @@ class Settings(BaseSettings):
 
     cors_origins: list[str] = ["http://localhost:3000"]
 
-    database_url: str = Field(
-        default="sqlite:///./public_finance.db"
-    )
+    database_url: str = Field(default="sqlite:///./public_finance.db")
 
     redis_url: str = "redis://redis:6379/0"
     celery_broker_url: str = "redis://redis:6379/0"

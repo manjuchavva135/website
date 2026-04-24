@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+import { buildApiUrl } from "@/lib/api-url";
 
 interface ProvenanceItem {
   document_id?: number;
@@ -88,7 +88,7 @@ export function ProvenanceDrawer({ rows, label = "Source Provenance" }: Provenan
                       <span>
                         <span className="font-medium text-slate-600">Doc ID:</span>{" "}
                         <a
-                          href={`${API_BASE}/api/v1/provenance/${docId}`}
+                          href={buildApiUrl(`/api/v1/provenance/${docId}`)}
                           target="_blank"
                           rel="noreferrer"
                           className="text-tide underline hover:text-teal-700"

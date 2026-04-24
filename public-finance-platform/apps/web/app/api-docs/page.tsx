@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
+import { apiBaseUrl, buildApiServiceUrl, buildApiUrl } from "@/lib/api-url";
 
 export const metadata: Metadata = { title: "API Documentation" };
-
-const BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
 const ENDPOINTS = [
   {
@@ -69,6 +68,8 @@ const COMMON_PARAMS = [
 ];
 
 export default function ApiDocsPage() {
+  const base = apiBaseUrl();
+
   return (
     <div className="max-w-3xl space-y-10">
       <div>
@@ -88,7 +89,7 @@ export default function ApiDocsPage() {
         </p>
         <div className="mt-3 flex flex-wrap gap-3">
           <a
-            href={`${BASE}/docs`}
+            href={buildApiServiceUrl("/docs")}
             target="_blank"
             rel="noreferrer"
             className="rounded-lg bg-tide px-4 py-2 text-sm font-medium text-white hover:bg-teal-600"
@@ -96,7 +97,7 @@ export default function ApiDocsPage() {
             Open Swagger UI →
           </a>
           <a
-            href={`${BASE}/redoc`}
+            href={buildApiServiceUrl("/redoc")}
             target="_blank"
             rel="noreferrer"
             className="rounded-lg border border-tide px-4 py-2 text-sm font-medium text-tide hover:bg-tide/10"
@@ -104,7 +105,7 @@ export default function ApiDocsPage() {
             Open ReDoc →
           </a>
           <a
-            href={`${BASE}/openapi.json`}
+            href={buildApiServiceUrl("/openapi.json")}
             target="_blank"
             rel="noreferrer"
             className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
@@ -118,7 +119,7 @@ export default function ApiDocsPage() {
       <section>
         <h2 className="text-xl font-semibold text-slate-800">Base URL</h2>
         <code className="mt-2 block rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
-          {BASE}
+          {base}
         </code>
       </section>
 
@@ -145,7 +146,7 @@ export default function ApiDocsPage() {
                     </div>
                     <p className="mt-1 text-sm text-slate-500">{item.description}</p>
                     <a
-                      href={`${BASE}${item.path.replace(/{[^}]+}/g, "1")}`}
+                      href={buildApiUrl(item.path.replace(/{[^}]+}/g, "1"))}
                       target="_blank"
                       rel="noreferrer"
                       className="mt-1.5 inline-block text-xs text-tide underline"
@@ -194,15 +195,15 @@ export default function ApiDocsPage() {
           {[
             {
               label: "Get audited debt outstanding for 2024-25",
-              code: `curl "${BASE}/api/v1/debt/outstanding?financial_year=2024-25&basis=audited_actual&format=json"`,
+              code: `curl "${buildApiUrl("/api/v1/debt/outstanding", { financial_year: "2024-25", basis: "audited_actual", format: "json" })}"`,
             },
             {
               label: "Download all fiscal receipts as CSV",
-              code: `curl "${BASE}/api/v1/fiscal/receipts?format=csv&page_size=2000" -o receipts.csv`,
+              code: `curl "${buildApiUrl("/api/v1/fiscal/receipts", { format: "csv", page_size: 2000 })}" -o receipts.csv`,
             },
             {
               label: "Get provenance for observation #42",
-              code: `curl "${BASE}/api/v1/provenance/42"`,
+              code: `curl "${buildApiUrl("/api/v1/provenance/42")}"`,
             },
           ].map((ex) => (
             <div key={ex.label} className="rounded-xl border border-slate-200 bg-slate-50">

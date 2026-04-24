@@ -161,3 +161,9 @@ GitHub Actions file:
 .github/workflows/ci.yml
 
 Pipeline includes web lint and test, python lint and test, and docker compose build smoke test.
+
+## Vercel
+
+The repo includes `vercel.json` for Vercel Services. It deploys the Next.js web app at `/` and FastAPI at `/api`, preserving public API paths such as `/api/v1/health`.
+
+See `VERCEL.md` for dashboard setup, required environment variables, migration requirements, deployment commands, and worker deployment notes.

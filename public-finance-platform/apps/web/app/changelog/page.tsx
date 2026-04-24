@@ -1,8 +1,8 @@
 import type { ChangelogEntry } from "@public-finance/shared-ts";
+import { buildApiUrl } from "@/lib/api-url";
 
 async function getChangelog(): Promise<ChangelogEntry[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-  const response = await fetch(`${baseUrl}/api/v1/changelog`, { cache: "no-store" });
+  const response = await fetch(buildApiUrl("/api/v1/changelog"), { cache: "no-store" });
   if (!response.ok) return [];
   return (await response.json()) as ChangelogEntry[];
 }

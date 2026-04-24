@@ -1,4 +1,5 @@
 import type { MetricObservation } from "@public-finance/shared-ts";
+import { buildApiUrl } from "@/lib/api-url";
 
 type Props = {
   observations: MetricObservation[];
@@ -22,9 +23,10 @@ export function SourceDrawer({ observations }: Props) {
               <p>Source document id: {item.source_document_id}</p>
               <p>Source row id: {item.source_row_id ?? "n/a"}</p>
               <a
-                href={`${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"}/api/v1/provenance/${item.id}`}
+                href={buildApiUrl(`/api/v1/provenance/${item.id}`)}
                 className="mt-2 inline-block text-tide underline"
                 target="_blank"
+                rel="noreferrer"
               >
                 Open provenance JSON
               </a>

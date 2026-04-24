@@ -4,6 +4,7 @@ import type {
   MetricObservation,
   MetricSeries,
 } from "@public-finance/shared-ts";
+import { buildApiUrl } from "./api-url";
 
 export type { ApiHealthResponse, ChangelogEntry, MetricObservation, MetricSeries };
 
@@ -35,21 +36,9 @@ type FetchParams = Record<string, string | number | boolean | null | undefined>;
 
 // ─── Internals ─────────────────────────────────────────────────────────────────
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-
-function buildUrl(path: string, params: FetchParams): string {
-  const url = new URL(path, BASE);
-  for (const [key, value] of Object.entries(params)) {
-    if (value !== null && value !== undefined && value !== "") {
-      url.searchParams.set(key, String(value));
-    }
-  }
-  return url.toString();
-}
-
 async function apiFetch<T>(path: string, params: FetchParams = {}): Promise<T | null> {
   try {
-    const url = buildUrl(path, params);
+    const url = buildApiUrl(path, params);
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) return null;
     return (await res.json()) as T;
@@ -60,7 +49,7 @@ async function apiFetch<T>(path: string, params: FetchParams = {}): Promise<T | 
 
 // Returns the URL for a CSV download of the full dataset (no pagination limit)
 export function csvDownloadUrl(apiPath: string, filters: FetchParams = {}): string {
-  return buildUrl(`/api/v1${apiPath}`, { ...filters, format: "csv", page_size: 2000 });
+  return buildApiUrl(`/api/v1${apiPath}`, { ...filters, format: "csv", page_size: 2000 });
 }
 
 // ─── Public API client ─────────────────────────────────────────────────────────
