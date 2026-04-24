@@ -1,5 +1,25 @@
-from pydantic import Field
+import json
+from typing import Any
+
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _parse_string_list(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if isinstance(value, str):
+        raw = value.strip()
+        if not raw:
+            return []
+        try:
+            decoded = json.loads(raw)
+        except json.JSONDecodeError:
+            decoded = None
+        if isinstance(decoded, list):
+            return [str(item).strip() for item in decoded if str(item).strip()]
+        return [item.strip() for item in raw.split(",") if item.strip()]
+    return []
 
 
 class Settings(BaseSettings):
@@ -13,9 +33,9 @@ class Settings(BaseSettings):
     auto_seed_data: bool = True
     parser_version: str = "2026.04.24"
     admin_api_token: str = "dev-admin-token"
-    admin_allowed_emails: list[str] = ["admin@apfinance.local"]
+    admin_allowed_emails: Any = ["admin@apfinance.local"]
 
-    cors_origins: list[str] = ["http://localhost:3000"]
+    cors_origins: Any = ["http://localhost:3000"]
 
     database_url: str = Field(default="sqlite:///./public_finance.db")
 
@@ -41,6 +61,11 @@ class Settings(BaseSettings):
     rbi_source_url: str = "https://rbi.org.in/"
     ap_finance_source_url: str = "https://finance.ap.gov.in/"
     cag_source_url: str = "https://cag.gov.in/"
+
+    @field_validator("admin_allowed_emails", "cors_origins")
+    @classmethod
+    def parse_string_lists(cls, value: Any) -> list[str]:
+        return _parse_string_list(value)
 
 
 settings = Settings()
