@@ -13,6 +13,7 @@ from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.config import settings
 
@@ -69,7 +70,9 @@ class MetricsRegistry:
         with self.lock:
             self.counters[key] += value
 
-    def observe_latency(self, name: str, duration_ms: float, labels: dict[str, str] | None = None) -> None:
+    def observe_latency(
+        self, name: str, duration_ms: float, labels: dict[str, str] | None = None
+    ) -> None:
         key = self._key(name, labels)
         with self.lock:
             values = self.latency_ms[key]
@@ -87,7 +90,8 @@ class MetricsRegistry:
                 lines.append(f"{key} {value}")
             lines.extend(
                 [
-                    "# HELP http_request_duration_ms_avg Rolling average request duration in milliseconds.",
+                    "# HELP http_request_duration_ms_avg "
+                    "Rolling average request duration in milliseconds.",
                     "# TYPE http_request_duration_ms_avg gauge",
                 ]
             )
@@ -187,7 +191,11 @@ def install_observability(app: FastAPI) -> None:
                 response.headers["X-RateLimit-Remaining"] = str(remaining)
             metrics_registry.increment(
                 "http_requests_total",
-                {"path": route_family, "method": request.method, "status": str(response.status_code)},
+                {
+                    "path": route_family,
+                    "method": request.method,
+                    "status": str(response.status_code),
+                },
             )
             metrics_registry.observe_latency(
                 "http_request_duration_ms",
@@ -209,9 +217,10 @@ def install_observability(app: FastAPI) -> None:
             return response
         except Exception as exc:
             duration_ms = (time.perf_counter() - started) * 1000
+            status_code = 503 if isinstance(exc, SQLAlchemyError) else 500
             metrics_registry.increment(
                 "http_requests_total",
-                {"path": route_family, "method": request.method, "status": "500"},
+                {"path": route_family, "method": request.method, "status": str(status_code)},
             )
             logger.exception(
                 "request_failed",
@@ -219,13 +228,22 @@ def install_observability(app: FastAPI) -> None:
                     "correlation_id": correlation_id,
                     "method": request.method,
                     "path": request.url.path,
-                    "status_code": 500,
+                    "status_code": status_code,
                     "duration_ms": round(duration_ms, 3),
                     "client_ip": client_ip,
                     "event": "http_request_error",
                     "error": str(exc),
                 },
             )
-            raise
+            detail = (
+                "Database unavailable or schema missing"
+                if isinstance(exc, SQLAlchemyError)
+                else "Internal server error"
+            )
+            return JSONResponse(
+                status_code=status_code,
+                content={"detail": detail, "correlation_id": correlation_id},
+                headers={CORRELATION_ID_HEADER: correlation_id},
+            )
         finally:
             correlation_id_var.reset(token)
