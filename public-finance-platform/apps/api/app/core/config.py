@@ -76,6 +76,14 @@ class Settings(BaseSettings):
     def parse_string_lists(cls, value: Any) -> list[str]:
         return _parse_string_list(value)
 
+    @field_validator("s3_endpoint_url", "s3_bucket", "s3_access_key", "s3_secret_key")
+    @classmethod
+    def require_non_empty_s3_config(cls, value: Any) -> str:
+        normalized = str(value).strip()
+        if not normalized:
+            raise ValueError("must be set to a non-empty value")
+        return normalized
+
     @field_validator("database_url")
     @classmethod
     def normalize_database_url(cls, value: Any) -> str:

@@ -37,6 +37,14 @@ class WorkerSettings(BaseSettings):
     parser_anomaly_warning_threshold: int = 10
     parser_anomaly_manual_review_threshold: int = 1
 
+    @field_validator("s3_endpoint_url", "s3_bucket", "s3_access_key", "s3_secret_key")
+    @classmethod
+    def require_non_empty_s3_config(cls, value: Any) -> str:
+        normalized = str(value).strip()
+        if not normalized:
+            raise ValueError("must be set to a non-empty value")
+        return normalized
+
     @field_validator("database_url")
     @classmethod
     def normalize_hosted_postgres_url(cls, value: Any) -> str:
