@@ -22,6 +22,15 @@ def _parse_string_list(value: Any) -> list[str]:
     return []
 
 
+def _normalize_database_url(value: Any) -> str:
+    raw = str(value)
+    if raw.startswith("postgres://"):
+        return f"postgresql+psycopg://{raw.removeprefix('postgres://')}"
+    if raw.startswith("postgresql://"):
+        return f"postgresql+psycopg://{raw.removeprefix('postgresql://')}"
+    return raw
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
@@ -66,6 +75,11 @@ class Settings(BaseSettings):
     @classmethod
     def parse_string_lists(cls, value: Any) -> list[str]:
         return _parse_string_list(value)
+
+    @field_validator("database_url")
+    @classmethod
+    def normalize_database_url(cls, value: Any) -> str:
+        return _normalize_database_url(value)
 
 
 settings = Settings()

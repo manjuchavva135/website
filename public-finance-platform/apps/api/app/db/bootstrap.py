@@ -6,12 +6,12 @@ from decimal import Decimal
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.db.session import Base, engine
+from app.db.session import Base, get_engine
 from app.models import ChangelogEntry, MetricObservation, MetricSeries, SourceDocument
 
 
 def create_schema() -> None:
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=get_engine())
 
 
 def seed_reference_data(db: Session) -> None:
@@ -39,7 +39,11 @@ def seed_reference_data(db: Session) -> None:
         ("ap-outstanding-debt", "Andhra Pradesh Outstanding Debt", "debt_outstanding"),
         ("ap-new-debt-issued", "Andhra Pradesh New Debt Issued", "debt_issued"),
         ("ap-debt-pipeline", "Andhra Pradesh Scheduled Debt Pipeline", "debt_pipeline"),
-        ("ap-principal-repayments", "Andhra Pradesh Principal Repayments Due", "principal_repayment_due"),
+        (
+            "ap-principal-repayments",
+            "Andhra Pradesh Principal Repayments Due",
+            "principal_repayment_due",
+        ),
         ("ap-interest-due", "Andhra Pradesh Interest Due", "interest_due"),
         ("ap-receipts-tax", "Andhra Pradesh Tax Receipts", "receipts_tax"),
         ("ap-receipts-non-tax", "Andhra Pradesh Non-Tax Receipts", "receipts_non_tax"),
@@ -62,7 +66,10 @@ def seed_reference_data(db: Session) -> None:
             title=title,
             metric_group=group,
             unit="INR crore",
-            description="Sample series for platform bootstrapping. Replace with ingested official values.",
+            description=(
+                "Sample series for platform bootstrapping. "
+                "Replace with ingested official values."
+            ),
         )
         db.add(series)
         db.flush()

@@ -40,6 +40,44 @@ def test_settings_accept_vercel_plain_string_list_envs() -> None:
     subprocess.run([sys.executable, "-c", code], cwd=app_dir, env=env, check=True)
 
 
+def test_settings_normalize_hosted_postgres_url_scheme() -> None:
+    app_dir = Path(__file__).resolve().parents[1]
+    env = {
+        **os.environ,
+        "DATABASE_URL": "postgres://user:pass@db.example.com:5432/public_finance?sslmode=require",
+    }
+    code = (
+        "from app.core.config import Settings;"
+        "settings = Settings();"
+        "assert str(settings.database_url).startswith('postgresql+psycopg://');"
+        "from app.db.session import get_engine;"
+        "assert get_engine().url.drivername == 'postgresql+psycopg'"
+    )
+
+    subprocess.run([sys.executable, "-c", code], cwd=app_dir, env=env, check=True)
+
+
+def test_vercel_health_survives_invalid_database_url() -> None:
+    app_dir = Path(__file__).resolve().parents[1]
+    env = {
+        **os.environ,
+        "DATABASE_URL": "not-a-sqlalchemy-url",
+        "AUTO_CREATE_SCHEMA": "false",
+        "AUTO_SEED_DATA": "false",
+    }
+    code = (
+        "from fastapi.testclient import TestClient;"
+        "from vercel_app import app;"
+        "client = TestClient(app);"
+        "assert client.get('/v1/health').status_code == 200;"
+        "ready = client.get('/v1/health/ready');"
+        "assert ready.status_code == 200;"
+        "assert ready.json()['status'] == 'degraded'"
+    )
+
+    subprocess.run([sys.executable, "-c", code], cwd=app_dir, env=env, check=True)
+
+
 def test_vercel_db_backed_route_returns_json_when_database_missing() -> None:
     app_dir = Path(__file__).resolve().parents[1]
     missing_db = app_dir / "missing_vercel_route_test.db"

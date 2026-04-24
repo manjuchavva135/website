@@ -38,6 +38,10 @@ ADMIN_ALLOWED_EMAILS=["admin@example.gov.in"]
 CORS_ORIGINS=["https://your-project.vercel.app"]
 ```
 
+`DATABASE_URL` may also be supplied as `postgres://...` or `postgresql://...`;
+the API normalizes those hosted Postgres URL formats to the installed `psycopg`
+SQLAlchemy driver at runtime.
+
 The Vercel entrypoint pins `API_BASE_PATH=/v1`, `AUTO_CREATE_SCHEMA=false`, and
 `AUTO_SEED_DATA=false` so production cold starts do not mutate the database. If
 you need to override these for a temporary preview environment, use
@@ -61,6 +65,8 @@ alembic upgrade head
 ```
 
 Use a CI job or one-off administrative runner that has access to `DATABASE_URL`.
+After migrations, run the ingestion/backfill workflow before expecting public
+data routes to return rows; Vercel production disables automatic seed data.
 
 ## Local Verification
 

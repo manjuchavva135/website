@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from sqlalchemy import text
 
 from app.core.config import settings
-from app.db.session import engine
+from app.db.session import get_engine
 from app.schemas import HealthResponse
 
 router = APIRouter(prefix="/health", tags=["health"])
@@ -31,7 +31,7 @@ def readiness() -> dict[str, object]:
     checks: dict[str, str] = {}
     status = "ok"
     try:
-        with engine.connect() as connection:
+        with get_engine().connect() as connection:
             connection.execute(text("select 1"))
         checks["database"] = "ok"
     except Exception as exc:
