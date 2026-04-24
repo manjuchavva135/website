@@ -167,3 +167,9 @@ Pipeline includes web lint and test, python lint and test, and docker compose bu
 The repo includes `vercel.json` for Vercel Services. It deploys the Next.js web app at `/` and FastAPI at `/api`, preserving public API paths such as `/api/v1/health`.
 
 See `VERCEL.md` for dashboard setup, required environment variables, migration requirements, deployment commands, and worker deployment notes.
+
+## Northflank Worker
+
+Deploy the Celery ingestion worker on Northflank with `apps/worker/Dockerfile`.
+See `NORTHFLANK.md` for the build context, Dockerfile path, runtime variables,
+and backfill/scheduled-job commands.

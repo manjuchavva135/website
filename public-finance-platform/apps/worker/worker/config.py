@@ -1,4 +1,16 @@
+from typing import Any
+
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def normalize_database_url(value: Any) -> str:
+    raw = str(value)
+    if raw.startswith("postgres://"):
+        return f"postgresql+psycopg://{raw.removeprefix('postgres://')}"
+    if raw.startswith("postgresql://"):
+        return f"postgresql+psycopg://{raw.removeprefix('postgresql://')}"
+    return raw
 
 
 class WorkerSettings(BaseSettings):
@@ -24,6 +36,11 @@ class WorkerSettings(BaseSettings):
     idempotency_lock_ttl_seconds: int = 86400
     parser_anomaly_warning_threshold: int = 10
     parser_anomaly_manual_review_threshold: int = 1
+
+    @field_validator("database_url")
+    @classmethod
+    def normalize_hosted_postgres_url(cls, value: Any) -> str:
+        return normalize_database_url(value)
 
 
 settings = WorkerSettings()

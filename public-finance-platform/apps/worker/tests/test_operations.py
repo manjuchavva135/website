@@ -1,3 +1,4 @@
+from worker.config import WorkerSettings
 from worker.commands.backfill import build_backfill_plan
 from worker.health import worker_health
 from worker.idempotency import stable_job_key
@@ -37,6 +38,12 @@ def test_worker_health_without_external_checks() -> None:
     assert payload["service"] == "worker"
     assert payload["status"] == "ok"
     assert payload["checks"]["configuration"] == "ok"
+
+
+def test_worker_settings_normalizes_hosted_postgres_url() -> None:
+    settings = WorkerSettings(database_url="postgresql://user:pass@example.com/db?sslmode=require")
+
+    assert settings.database_url.startswith("postgresql+psycopg://")
 
 
 def test_parser_anomaly_reporting_for_manual_review() -> None:
