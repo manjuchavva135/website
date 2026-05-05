@@ -120,6 +120,9 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
             <Link className="rounded-full bg-white/10 px-4 py-2 hover:bg-white/20" href="/admin/review-queue">
               Review queue
             </Link>
+            <Link className="rounded-full bg-white/10 px-4 py-2 hover:bg-white/20" href="/admin/upload">
+              Upload
+            </Link>
             <Link className="rounded-full bg-white/10 px-4 py-2 hover:bg-white/20" href="/admin/releases">
               Releases
             </Link>

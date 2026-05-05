@@ -40,7 +40,7 @@ class SourceDocumentResponse(BaseModel):
     source_name: str
     publisher: str
     title: str
-    source_url: str
+    source_url: str | None
     document_type: str
     publication_date: date | None
     storage_key: str
@@ -203,3 +203,11 @@ class ReviewActionResponse(BaseModel):
     comments: str | None
     acted_at: datetime
     source_document_id: int | None
+
+
+class ManualUploadResponse(BaseModel):
+    document_id: int
+    checksum_sha256: str
+    storage_key: str
+    review_status: str
+    duplicate: bool

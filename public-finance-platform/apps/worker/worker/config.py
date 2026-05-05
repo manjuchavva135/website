@@ -37,6 +37,12 @@ class WorkerSettings(BaseSettings):
     parser_anomaly_warning_threshold: int = 10
     parser_anomaly_manual_review_threshold: int = 1
 
+    # Set to True after baseline-v1 is published to re-enable weekly auto-fetchers.
+    auto_fetchers_enabled: bool = False
+
+    # Extractor to use for manual uploads. Options: rule_based | llm | hybrid.
+    extractor_provider: str = "rule_based"
+
     @field_validator("s3_endpoint_url", "s3_bucket", "s3_access_key", "s3_secret_key")
     @classmethod
     def require_non_empty_s3_config(cls, value: Any) -> str:

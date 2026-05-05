@@ -584,6 +584,64 @@ class AdminReviewService:
                 return True
         return False
 
+    def create_manual_upload(
+        self,
+        *,
+        source_family: str,
+        source_name: str,
+        title: str,
+        document_type: str,
+        checksum_sha256: str,
+        storage_key: str,
+        storage_bucket: str,
+        content_length_bytes: int,
+        source_url: str | None,
+        publication_date: object | None,
+        uploaded_by_email: str | None,
+        parser_version: str,
+        notes: str | None,
+    ) -> SourceDocument:
+        from app.models import IngestionMode
+        doc = SourceDocument(
+            source_name=source_name,
+            publisher=source_family,
+            source_url=source_url,
+            canonical_url=source_url,
+            title=title,
+            document_type=document_type,
+            mime_type=None,
+            publication_date=publication_date,
+            effective_date=None,
+            fiscal_year_label=None,
+            checksum_sha256=checksum_sha256,
+            content_length_bytes=content_length_bytes,
+            storage_bucket=storage_bucket,
+            storage_key=storage_key,
+            fetch_etag=None,
+            parser_version=parser_version,
+            review_status=ReviewState.PENDING,
+            review_notes=notes,
+            ingestion_mode=IngestionMode.manual_upload,
+            uploaded_by_email=uploaded_by_email,
+            is_active_version=True,
+        )
+        self.db.add(doc)
+        self.db.flush()
+        self.db.add(
+            ReviewAction(
+                entity_table="source_documents",
+                entity_id=doc.id,
+                action_type=ReviewActionType.comment,
+                review_status=ReviewState.PENDING,
+                actor_email=uploaded_by_email,
+                comments=f"Manually uploaded via admin UI (source_family={source_family})",
+                source_document_id=doc.id,
+            )
+        )
+        self.db.commit()
+        self.db.refresh(doc)
+        return doc
+
     def _mark_approved_documents_published(self, *, actor_email: str, release_id: int) -> None:
         approved_docs = self.db.scalars(
             select(SourceDocument).where(SourceDocument.review_status == ReviewState.APPROVED)

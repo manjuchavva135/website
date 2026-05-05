@@ -102,6 +102,11 @@ class ReconciliationStatus(StrEnum):
     ignored = "ignored"
 
 
+class IngestionMode(StrEnum):
+    auto_fetch = "auto_fetch"
+    manual_upload = "manual_upload"
+
+
 class SourceDocument(Base):
     __tablename__ = "source_documents"
     __table_args__ = (
@@ -115,7 +120,7 @@ class SourceDocument(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     source_name: Mapped[str] = mapped_column(String(100), nullable=False)
     publisher: Mapped[str] = mapped_column(String(200), nullable=False)
-    source_url: Mapped[str] = mapped_column(String(1000), nullable=False)
+    source_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     canonical_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     title: Mapped[str] = mapped_column(String(500), nullable=False)
     document_type: Mapped[SourceDocumentType] = mapped_column(
@@ -133,6 +138,13 @@ class SourceDocument(Base):
     parser_version: Mapped[str | None] = mapped_column(String(60), nullable=True)
     review_status: Mapped[str] = mapped_column(String(30), nullable=False, default="pending")
     review_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ingestion_mode: Mapped[IngestionMode] = mapped_column(
+        Enum(IngestionMode, name="ingestion_mode", native_enum=False),
+        nullable=False,
+        default=IngestionMode.auto_fetch,
+        server_default=IngestionMode.auto_fetch.value,
+    )
+    uploaded_by_email: Mapped[str | None] = mapped_column(String(255), nullable=True)
     is_active_version: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

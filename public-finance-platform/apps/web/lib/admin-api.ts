@@ -128,6 +128,14 @@ export type RerunParseResponse = {
   status: string;
 };
 
+export type ManualUploadResponse = {
+  document_id: number;
+  checksum_sha256: string;
+  storage_key: string;
+  review_status: string;
+  duplicate: boolean;
+};
+
 type FetchParams = Record<string, string | number | boolean | null | undefined>;
 
 function buildUrl(path: string, params: FetchParams = {}): string {
@@ -245,4 +253,49 @@ export const adminApi = {
 
   auditTrail: (credentials: AdminCredentials, params: FetchParams = {}) =>
     adminFetch<ReviewAction[]>(credentials, "/audit-trail", {}, params),
+
+  uploadDocument: async (
+    credentials: AdminCredentials,
+    payload: {
+      file: File;
+      source_family: string;
+      source_name: string;
+      publication_date?: string;
+      source_url?: string;
+      notes?: string;
+    },
+  ): Promise<ManualUploadResponse> => {
+    const form = new FormData();
+    form.append("file", payload.file);
+    form.append("source_family", payload.source_family);
+    form.append("source_name", payload.source_name);
+    if (payload.publication_date) form.append("publication_date", payload.publication_date);
+    if (payload.source_url) form.append("source_url", payload.source_url);
+    if (payload.notes) form.append("notes", payload.notes);
+
+    const response = await fetch(buildUrl("/documents/upload"), {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        "X-Admin-Email": credentials.email,
+        "X-Admin-Token": credentials.token,
+      },
+      body: form,
+    });
+
+    if (!response.ok) {
+      let detail = `Upload failed with ${response.status}`;
+      try {
+        const payload = (await response.json()) as { detail?: unknown };
+        if (typeof payload.detail === "string") detail = payload.detail;
+      } catch {
+        // keep status-based message
+      }
+      const err = new Error(detail) as Error & { status: number };
+      err.status = response.status;
+      throw err;
+    }
+
+    return (await response.json()) as ManualUploadResponse;
+  },
 };

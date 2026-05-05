@@ -1,9 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+import hashlib
+from datetime import date
+
+from fastapi import APIRouter, Depends, Form, HTTPException, Query, UploadFile
+from shared_py import S3StorageAdapter
 from sqlalchemy.orm import Session
 
 from app.core.auth import AdminPrincipal, require_admin
+from app.core.config import settings
 from app.db.session import get_db
-from app.models import DatasetRelease, ReviewAction
+from app.models import DatasetRelease, ReviewAction, SourceDocument
 from app.schemas import (
     AdminConflictComparison,
     AdminDocumentDetail,
@@ -16,6 +21,7 @@ from app.schemas import (
     AdminStateTransitionRequest,
     AdminWorkflowStateResponse,
     DatasetReleaseResponse,
+    ManualUploadResponse,
     ParserErrorItem,
     ReviewActionResponse,
     ReviewQueueItem,
@@ -43,6 +49,87 @@ def list_review_queue(
         )
         for item in docs
     ]
+
+
+@router.post("/documents/upload", response_model=ManualUploadResponse)
+async def upload_document(
+    file: UploadFile,
+    source_family: str = Form(..., description="rbi | ap_finance | cag | other"),
+    source_name: str = Form(...),
+    publication_date: date | None = Form(default=None),
+    source_url: str | None = Form(default=None),
+    notes: str | None = Form(default=None),
+    db: Session = Depends(get_db),
+    principal: AdminPrincipal = Depends(require_admin),
+) -> ManualUploadResponse:
+    content = await file.read()
+    checksum = hashlib.sha256(content).hexdigest()
+
+    # Deduplicate by checksum — return existing document if already uploaded.
+    existing: SourceDocument | None = db.query(SourceDocument).filter(
+        SourceDocument.checksum_sha256 == checksum
+    ).first()
+    if existing is not None:
+        return ManualUploadResponse(
+            document_id=existing.id,
+            checksum_sha256=checksum,
+            storage_key=existing.storage_key,
+            review_status=existing.review_status,
+            duplicate=True,
+        )
+
+    filename = file.filename or "upload"
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "bin"
+    storage_key = f"manual_uploads/{source_family}/{checksum[:12]}.{ext}"
+    bucket = settings.s3_bucket
+
+    s3 = S3StorageAdapter(
+        endpoint_url=settings.s3_endpoint_url,
+        region=settings.s3_region,
+        access_key=settings.s3_access_key,
+        secret_key=settings.s3_secret_key,
+        use_ssl=settings.s3_use_ssl,
+    )
+    mime_map = {"pdf": "application/pdf", "html": "text/html", "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "csv": "text/csv"}
+    content_type = mime_map.get(ext, "application/octet-stream")
+    s3.upload_bytes(bucket, storage_key, content, content_type)
+
+    doc_type = ext if ext in ("pdf", "html", "xlsx", "csv", "json", "xls") else "other"
+    title = filename or f"{source_family} upload {checksum[:8]}"
+
+    service = AdminReviewService(db)
+    doc = service.create_manual_upload(
+        source_family=source_family,
+        source_name=source_name,
+        title=title,
+        document_type=doc_type,
+        checksum_sha256=checksum,
+        storage_key=storage_key,
+        storage_bucket=bucket,
+        content_length_bytes=len(content),
+        source_url=source_url,
+        publication_date=publication_date,
+        uploaded_by_email=principal.email,
+        parser_version=settings.parser_version,
+        notes=notes,
+    )
+
+    # Enqueue parse task if Celery dispatch is enabled.
+    if settings.dispatch_admin_parser_jobs:
+        from celery import Celery
+        celery_app = Celery(broker=settings.celery_broker_url, backend=settings.celery_result_backend)
+        celery_app.send_task(
+            "worker.tasks.manual_upload.parse_uploaded_document",
+            kwargs={"document_id": doc.id, "source_family": source_family},
+        )
+
+    return ManualUploadResponse(
+        document_id=doc.id,
+        checksum_sha256=checksum,
+        storage_key=storage_key,
+        review_status=doc.review_status,
+        duplicate=False,
+    )
 
 
 @router.get("/documents", response_model=AdminDocumentListResponse)

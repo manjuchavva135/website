@@ -5,12 +5,12 @@
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1514 nodes · 2802 edges · 174 communities (158 shown, 16 thin omitted)
+- 1514 nodes · 2802 edges · 176 communities (159 shown, 17 thin omitted)
 - Extraction: 65% EXTRACTED · 35% INFERRED · 0% AMBIGUOUS · INFERRED: 986 edges (avg confidence: 0.75)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2301d5a9`
+- Built from commit: `2dada793`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -61,20 +61,22 @@
 - [[_COMMUNITY_Singleton 44|Singleton 44]]
 - [[_COMMUNITY_Singleton 45|Singleton 45]]
 - [[_COMMUNITY_Singleton 46|Singleton 46]]
-- [[_COMMUNITY_Singleton 49|Singleton 49]]
+- [[_COMMUNITY_Singleton 47|Singleton 47]]
 - [[_COMMUNITY_Singleton 50|Singleton 50]]
 - [[_COMMUNITY_Singleton 51|Singleton 51]]
 - [[_COMMUNITY_Singleton 52|Singleton 52]]
 - [[_COMMUNITY_Singleton 53|Singleton 53]]
+- [[_COMMUNITY_Singleton 54|Singleton 54]]
 - [[_COMMUNITY_Singleton 55|Singleton 55]]
-- [[_COMMUNITY_Singleton 56|Singleton 56]]
+- [[_COMMUNITY_Singleton 57|Singleton 57]]
 - [[_COMMUNITY_Singleton 58|Singleton 58]]
-- [[_COMMUNITY_Singleton 59|Singleton 59]]
-- [[_COMMUNITY_Singleton 61|Singleton 61]]
+- [[_COMMUNITY_Singleton 60|Singleton 60]]
 - [[_COMMUNITY_Singleton 62|Singleton 62]]
-- [[_COMMUNITY_Singleton 65|Singleton 65]]
-- [[_COMMUNITY_Singleton 78|Singleton 78]]
-- [[_COMMUNITY_Community 97|Community 97]]
+- [[_COMMUNITY_Singleton 63|Singleton 63]]
+- [[_COMMUNITY_Singleton 66|Singleton 66]]
+- [[_COMMUNITY_Singleton 69|Singleton 69]]
+- [[_COMMUNITY_Singleton 80|Singleton 80]]
+- [[_COMMUNITY_Community 99|Community 99]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `str()` - 46 edges
@@ -105,7 +107,7 @@
 - **Admin Review and Immutable Release Flow** — admin_review_queue, admin_fact_decision, admin_release_publish, admin_audit_trail [EXTRACTED 0.95]
 - **Multi-Source Ingestion Tasks (RBI, AP Finance, CAG)** — northflank_task_rbi, northflank_task_ap_finance, northflank_task_ingest [EXTRACTED 0.95]
 
-## Communities (174 total, 16 thin omitted)
+## Communities (176 total, 17 thin omitted)
 
 ### Community 0 - "Ingestion & Discovery Tests"
 Cohesion: 0.05
@@ -164,74 +166,78 @@ Cohesion: 0.11
 Nodes (13): formatCell(), isBasisKey(), applyFilters(), csvDownloadUrl(), downloadCsv(), rowsToCsv(), buildFilterUrl(), detectBasis() (+5 more)
 
 ### Community 14 - "Canonical DB Migration"
-Cohesion: 0.11
-Nodes (20): Base, DeclarativeBase, BudgetHead, DatasetRelease, DatasetReleaseStatus, DebtEventType, DepartmentSpending, ParserError (+12 more)
+Cohesion: 0.1
+Nodes (19): AdminDocumentListResponse, AdminRerunParseResponse, AdminWorkflowStateResponse, DatasetReleaseResponse, ReviewActionResponse, ReviewQueueItem, AdminReviewService, FactRef (+11 more)
 
 ### Community 15 - "Admin State Machine"
 Cohesion: 0.15
 Nodes (12): AndhraReconciliationService, _audited_priority(), _is_official_source(), _issuance_priority(), OutputValue, _to_decimal(), test_reconciliation_run_and_results_are_persisted(), test_settings_accept_vercel_plain_string_list_envs() (+4 more)
 
 ### Community 16 - "CSV Export"
-Cohesion: 0.11
-Nodes (17): AdminDocumentListResponse, AdminRerunParseResponse, AdminWorkflowStateResponse, DatasetReleaseResponse, ReviewQueueItem, AdminReviewService, FactRef, ReviewState (+9 more)
+Cohesion: 0.14
+Nodes (19): Base, DeclarativeBase, BudgetHead, DatasetRelease, DatasetReleaseStatus, DebtEventType, DepartmentSpending, ParserError (+11 more)
 
 ### Community 17 - "Alembic Config"
 Cohesion: 0.15
 Nodes (23): BaseModel, ApiListResponse, DebtEventItem, DebtOutstandingItem, DepartmentSpendingItem, FiscalMetricItem, PaginationMeta, ProvenanceItem (+15 more)
 
 ### Community 18 - "Auth Middleware"
-Cohesion: 0.09
-Nodes (20): list_changelog(), health(), readiness(), get_provenance(), audit_trail(), get_document_detail(), AdminConflictComparison, AdminDocumentDetail (+12 more)
-
-### Community 19 - "Schema Contract Tests"
-Cohesion: 0.19
-Nodes (10): canonicalize_url(), log_event(), FetchRunRecord, SourceDocumentRecord, SourcePersistenceService, StoredDocument, _basename(), HttpClient (+2 more)
-
-### Community 20 - "Admin Auth Context"
 Cohesion: 0.17
 Nodes (12): ChangelogPage(), getChangelog(), adminFetch(), buildUrl(), apiFetch(), apiBaseUrl(), buildApiServiceUrl(), buildApiUrl() (+4 more)
 
-### Community 21 - "Error Boundary"
+### Community 19 - "Schema Contract Tests"
 Cohesion: 0.12
-Nodes (17): AdminConflictComparison, AdminDocumentDetail, AdminExtractedFact, AdminFactDecisionRequest, AdminParserRunItem, AdminReleasePublishRequest, AdminStateTransitionRequest, ChangelogResponse (+9 more)
+Nodes (17): list_changelog(), get_provenance(), audit_trail(), get_document_detail(), AdminConflictComparison, AdminDocumentDetail, AdminExtractedFact, AdminFactDecisionRequest (+9 more)
 
-### Community 22 - "Root Layout"
-Cohesion: 0.17
-Nodes (12): DebtEvent, ParsedBorrowingRecord, _build_event_notes(), _build_instrument_code(), _map_basis_tag(), _map_debt_event_type(), _next_pk(), RbiPersistence (+4 more)
-
-### Community 23 - "Loading State"
+### Community 20 - "Admin Auth Context"
 Cohesion: 0.16
 Nodes (13): _ap_finance_source_specs(), fetch_ap_finance_data(), fetch_official_sources(), _source_specs(), fetch_rbi_borrowing_data(), _rbi_source_specs(), test_source_specs_contains_seed_urls(), test_stable_job_key_is_deterministic() (+5 more)
 
-### Community 24 - "Admin Layout"
+### Community 21 - "Error Boundary"
+Cohesion: 0.18
+Nodes (12): DebtEvent, ParsedBorrowingRecord, _build_event_notes(), _build_instrument_code(), _map_basis_tag(), _map_debt_event_type(), _next_pk(), RbiPersistence (+4 more)
+
+### Community 22 - "Root Layout"
+Cohesion: 0.14
+Nodes (15): AdminConflictComparison, AdminDocumentDetail, AdminExtractedFact, AdminFactDecisionRequest, AdminParserRunItem, AdminReleasePublishRequest, AdminStateTransitionRequest, ChangelogResponse (+7 more)
+
+### Community 23 - "Loading State"
 Cohesion: 0.26
 Nodes (14): PublicFinanceService, _cache_key(), debt_issues(), debt_outstanding(), debt_pipeline(), debt_repayments(), department_spending(), fiscal_deficits() (+6 more)
 
-### Community 25 - "Admin Document Page"
+### Community 24 - "Admin Layout"
 Cohesion: 0.14
 Nodes (4): configure_logging(), FixedWindowRateLimiter, JsonLogFormatter, MetricsRegistry
 
-### Community 26 - "Admin Releases Page"
+### Community 25 - "Admin Document Page"
 Cohesion: 0.15
-Nodes (7): fetch_official_sources(), _source_specs(), default(), SourceRegistry, SourceRegistryEntry, S3StorageAdapter, test_source_specs_contains_seed_urls()
+Nodes (7): detect_anti_bot_page(), detect_anti_bot_signals(), FakeHttpClient, FakeRepository, FakeStorage, test_checksum_deduplication_skips_duplicate_pdf_uploads(), test_detect_anti_bot_pages()
+
+### Community 26 - "Admin Releases Page"
+Cohesion: 0.19
+Nodes (7): emit_pipeline_event(), CrawlMetrics, get_crawler_logger(), log_event(), _basename(), _infer_document_type(), SourceDiscoveryCrawler
 
 ### Community 27 - "Review Queue Page"
 Cohesion: 0.14
 Nodes (3): AdminAuthProvider(), useAdminAuth(), StatusPill()
 
 ### Community 28 - "Health Route"
-Cohesion: 0.16
-Nodes (6): classify_document_family(), FakeHttpClient, FakeRepository, FakeStorage, test_checksum_deduplication_skips_duplicate_pdf_uploads(), test_classification_rules_cover_core_families()
-
-### Community 29 - "Provenance Drawer"
 Cohesion: 0.29
 Nodes (6): _normalize_database_url(), _parse_string_list(), parse_string_lists(), str(), _apply_sort(), ListResult
 
-### Community 30 - "Source Drawer"
+### Community 29 - "Provenance Drawer"
 Cohesion: 0.19
 Nodes (10): BackfillTaskSpec, build_backfill_plan(), enqueue_backfill(), main(), test_backfill_plan_uses_deterministic_task_ids(), test_parser_anomaly_reporting_for_manual_review(), test_worker_settings_normalizes_hosted_postgres_url(), normalize_database_url() (+2 more)
 
+### Community 30 - "Source Drawer"
+Cohesion: 0.22
+Nodes (7): canonicalize_url(), _AnchorParser, DiscoveredLink, extract_page_title(), extract_pdf_links(), _looks_like_pdf(), test_extract_pdf_links_canonicalizes_and_deduplicates()
+
 ### Community 31 - "Release Workspace"
+Cohesion: 0.18
+Nodes (3): _infer_extension(), RawArtifactStorage, S3StorageAdapter
+
+### Community 32 - "Review Dashboard"
 Cohesion: 0.2
 Nodes (3): _build_id_allocator(), client(), _seed_api_data()
 
@@ -239,63 +245,63 @@ Nodes (3): _build_id_allocator(), client(), _seed_api_data()
 Cohesion: 0.32
 Nodes (10): seed_reference_data(), SourceDocument, Basis, ChangelogEntry, IngestionRun, MetricGroup, MetricObservation, MetricSeries (+2 more)
 
-### Community 34 - "App Shell Nav"
+### Community 35 - "Basis Badge"
+Cohesion: 0.27
+Nodes (5): FetchRunRecord, SourceDocumentRecord, SourcePersistenceService, StoredDocument, HttpClient
+
+### Community 36 - "Last Updated"
 Cohesion: 0.38
 Nodes (8): _build_id_allocator(), _headers(), _seed_admin_data(), test_annotate_rerun_and_release_flow(), test_fact_decision_and_conflict_comparison(), test_invalid_fact_decision_is_rejected(), test_list_documents_and_detail(), test_transition_document_records_review_action()
 
-### Community 35 - "Basis Badge"
-Cohesion: 0.27
-Nodes (6): _AnchorParser, DiscoveredLink, extract_page_title(), extract_pdf_links(), _looks_like_pdf(), test_extract_pdf_links_canonicalizes_and_deduplicates()
-
-### Community 36 - "Last Updated"
-Cohesion: 0.29
-Nodes (6): lifespan(), create_schema(), get_db(), get_engine(), get_session_factory(), SessionLocal()
-
 ### Community 37 - "Trust Copy"
+Cohesion: 0.24
+Nodes (6): fetch_official_sources(), _source_specs(), default(), SourceRegistry, SourceRegistryEntry, test_source_specs_contains_seed_urls()
+
+### Community 38 - "Worker Config Test"
 Cohesion: 0.4
 Nodes (9): DebtInstrument, DebtPosition, FiscalMetric, _link_provenance(), _seed_source_document(), test_basis_series_separation_receipts_views_are_distinct(), test_reconciliation_persists_conflicts_and_human_readable_notes(), test_reconciliation_run_and_results_are_persisted() (+1 more)
 
-### Community 38 - "Worker Config Test"
+### Community 39 - "Worker Commands"
 Cohesion: 0.29
-Nodes (3): emit_pipeline_event(), CrawlMetrics, get_crawler_logger()
+Nodes (6): lifespan(), create_schema(), get_db(), get_engine(), get_session_factory(), SessionLocal()
 
 ### Community 43 - "Singleton 43"
 Cohesion: 0.4
-Nodes (5): list_observations(), list_observations_csv(), list_series(), MetricObservationResponse, MetricSeriesResponse
+Nodes (5): MetricObservationResponse, MetricSeriesResponse, list_observations(), list_observations_csv(), list_series()
 
 ### Community 44 - "Singleton 44"
 Cohesion: 0.4
-Nodes (5): MetricObservationResponse, MetricSeriesResponse, list_observations(), list_observations_csv(), list_series()
+Nodes (5): list_observations(), list_observations_csv(), list_series(), MetricObservationResponse, MetricSeriesResponse
 
-### Community 45 - "Singleton 45"
+### Community 46 - "Singleton 46"
 Cohesion: 0.4
 Nodes (4): worker_health_task(), test_worker_health_without_external_checks(), main(), worker_health()
 
-### Community 49 - "Singleton 49"
+### Community 50 - "Singleton 50"
 Cohesion: 0.47
 Nodes (4): map_to_debt_positions_fields(), map_to_department_spending_fields(), map_to_fiscal_metrics_fields(), test_cag_mapper_fields_match_canonical_targets()
 
-### Community 50 - "Singleton 50"
+### Community 51 - "Singleton 51"
+Cohesion: 0.4
+Nodes (3): health(), readiness(), HealthResponse
+
+### Community 52 - "Singleton 52"
 Cohesion: 0.4
 Nodes (3): HealthResponse, health(), readiness()
-
-### Community 59 - "Singleton 59"
-Cohesion: 0.67
-Nodes (3): detect_anti_bot_page(), detect_anti_bot_signals(), test_detect_anti_bot_pages()
 
 ## Knowledge Gaps
 - **35 isolated node(s):** `initial schema  Revision ID: 20260424_0001 Revises:  Create Date: 2026-04-24`, `canonical schema  Revision ID: 20260424_0002 Revises: 20260424_0001 Create D`, `Simple process-local TTL cache for read-heavy API endpoints.`, `ReviewState`, `ProvenanceLocator` (+30 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `str()` connect `Provenance Drawer` to `RBI Parser Tests`, `Admin Review Workflow`, `Finance Data Service`, `Frontend API Client`, `Data Table UI`, `Initial DB Migration`, `Canonical DB Migration`, `CSV Export`, `Error Boundary`, `Loading State`, `Singleton 61`, `Source Drawer`?**
+- **Why does `str()` connect `Health Route` to `RBI Parser Tests`, `Admin Review Workflow`, `Finance Data Service`, `Frontend API Client`, `Data Table UI`, `Initial DB Migration`, `Canonical DB Migration`, `CSV Export`, `Admin Auth Context`, `Root Layout`, `Provenance Drawer`, `Singleton 62`?**
   _High betweenness centrality (0.252) - this node is a cross-community bridge._
-- **Why does `str()` connect `Admin Review Service` to `Ingestion & Discovery Tests`, `Reparse & Health Ops`, `Public API Layer`, `Reconciliation Engine`, `AP Finance Tests`, `Admin State Machine`, `Auth Middleware`, `Schema Contract Tests`, `Admin Releases Page`, `Singleton 59`?**
+- **Why does `str()` connect `Admin Review Service` to `Ingestion & Discovery Tests`, `Basis Badge`, `Reparse & Health Ops`, `Public API Layer`, `Trust Copy`, `Reconciliation Engine`, `AP Finance Tests`, `Admin State Machine`, `Schema Contract Tests`, `Admin Document Page`, `Admin Releases Page`?**
   _High betweenness centrality (0.134) - this node is a cross-community bridge._
-- **Why does `ReconciliationRun` connect `Canonical DB Migration` to `App Shell Nav`, `CAG/AP Finance Parsers`?**
+- **Why does `ReconciliationRun` connect `CSV Export` to `CAG/AP Finance Parsers`, `Last Updated`?**
   _High betweenness centrality (0.071) - this node is a cross-community bridge._
 - **Are the 43 inferred relationships involving `str()` (e.g. with `parser_anomalies()` and `get_document_detail()`) actually correct?**
   _`str()` has 43 INFERRED edges - model-reasoned connections that need verification._

@@ -91,11 +91,38 @@ alembic revision --autogenerate -m "description" # Create migration
 
 ### Architecture Notes
 
-- **Data flow:** Celery workers ingest raw documents from RBI/AP Finance Dept/CAG → store artifacts in S3 → parse and load into PostgreSQL → API serves via FastAPI → Next.js frontend renders
-- **Provenance tracking** is maintained at document, page, and row level
-- **Trust-first publication model:** documents go through an admin review queue before publication
+- **Data flow (baseline mode):** Admin uploads PDFs via `/admin/upload` → S3 storage → Celery `parse_uploaded_document` task → rule-based extractor parses → facts land in PostgreSQL with provenance → admin reviews/approves in `/admin/documents/{id}` → `POST /admin/releases/publish` creates immutable `DatasetRelease` (`baseline-v1`) → API serves approved data → Next.js frontend renders
+- **Data flow (auto-fetch mode, post-baseline):** Celery beat fires weekly (Mondays 02:00 UTC) → RBI/AP Finance/CAG crawlers → same parse/review/release pipeline
+- **Ingestion mode toggle:** `AUTO_FETCHERS_ENABLED=true` in worker env re-enables the weekly beat schedule. Default is `false` (manual-baseline mode).
+- **Pluggable extractor:** `EXTRACTOR_PROVIDER` env var selects `rule_based` (default), `llm` (stub — not yet implemented), or `hybrid`. Set on the worker. Code in `apps/worker/worker/extractors/`.
+- **Provenance tracking** is maintained at document, page, and row level via `ProvenanceLink` records
+- **Trust-first publication model:** documents go through an admin review queue (`pending` → `in_review` → `approved`) before being included in a release
 - **Shared contracts:** TypeScript types in `packages/shared-ts`, Python S3 utilities in `packages/shared-py/shared_py/storage.py`
 - **API entry point for Vercel:** `apps/api/vercel_app.py`
+- **S3 adapter:** `shared_py.S3StorageAdapter` — use `upload_bytes(bucket, key, payload, content_type)` and `get_object_bytes(bucket, key)`
+
+### Ingestion Workflow (Manual Baseline)
+
+1. Upload PDFs at `localhost:3000/admin/upload` (source family, source name, optional date/URL/notes)
+2. Worker parses each document; document moves to `in_review`
+3. Review extracted facts at `/admin/documents/{id}` — approve or reject individual facts
+4. Transition document to `approved`
+5. `POST /api/v1/admin/releases/publish` with `release_version="baseline-v1"` to lock the baseline
+6. Set `AUTO_FETCHERS_ENABLED=true` on the worker and restart beat to begin weekly refreshes
+
+### Key New Files (manual-baseline feature)
+
+| File | Purpose |
+|------|---------|
+| `apps/api/alembic/versions/20260505_0003_ingestion_mode.py` | Migration: adds `ingestion_mode`, `uploaded_by_email` to `source_documents`; makes `source_url` nullable |
+| `apps/api/app/models/canonical.py` | `IngestionMode` enum + two new columns on `SourceDocument` |
+| `apps/api/app/api/v1/review.py` | `POST /admin/documents/upload` endpoint |
+| `apps/api/app/services/admin_review_service.py` | `create_manual_upload()` service method |
+| `apps/worker/worker/extractors/` | `base.py`, `rule_based.py`, `llm.py` (stub), `hybrid.py`, `validators.py`, `factory.py` |
+| `apps/worker/worker/tasks/manual_upload.py` | `parse_uploaded_document` Celery task |
+| `apps/web/components/admin/admin-upload.tsx` | Upload form component |
+| `apps/web/app/admin/upload/page.tsx` | Upload page route |
+| `apps/web/lib/admin-api.ts` | `adminApi.uploadDocument()` + `ManualUploadResponse` type |
 
 ### Deployment
 
