@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -22,11 +22,11 @@ class WorkerSettings(BaseSettings):
 
     celery_broker_url: str = "redis://redis:6379/0"
     celery_result_backend: str = "redis://redis:6379/1"
-    s3_endpoint_url: str = "http://minio:9000"
+    s3_endpoint_url: str = Field(...)
     s3_region: str = "us-east-1"
-    s3_bucket: str = "public-finance-data"
-    s3_access_key: str = "minio"
-    s3_secret_key: str = "minio123"
+    s3_bucket: str = Field(...)
+    s3_access_key: str = Field(...)
+    s3_secret_key: str = Field(...)
     s3_use_ssl: bool = False
 
     rbi_source_url: str = "https://rbi.org.in/"
@@ -36,6 +36,14 @@ class WorkerSettings(BaseSettings):
     idempotency_lock_ttl_seconds: int = 86400
     parser_anomaly_warning_threshold: int = 10
     parser_anomaly_manual_review_threshold: int = 1
+
+    @field_validator("s3_endpoint_url", "s3_bucket", "s3_access_key", "s3_secret_key")
+    @classmethod
+    def require_non_empty_s3_config(cls, value: Any) -> str:
+        normalized = str(value).strip()
+        if not normalized:
+            raise ValueError("must be set to a non-empty value")
+        return normalized
 
     @field_validator("database_url")
     @classmethod
