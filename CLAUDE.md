@@ -94,7 +94,7 @@ alembic revision --autogenerate -m "description" # Create migration
 - **Data flow (baseline mode):** Admin uploads PDFs via `/admin/upload` → S3 storage → Celery `parse_uploaded_document` task → rule-based extractor parses → facts land in PostgreSQL with provenance → admin reviews/approves in `/admin/documents/{id}` → `POST /admin/releases/publish` creates immutable `DatasetRelease` (`baseline-v1`) → API serves approved data → Next.js frontend renders
 - **Data flow (auto-fetch mode, post-baseline):** Celery beat fires weekly (Mondays 02:00 UTC) → RBI/AP Finance/CAG crawlers → same parse/review/release pipeline
 - **Ingestion mode toggle:** `AUTO_FETCHERS_ENABLED=true` in worker env re-enables the weekly beat schedule. Default is `false` (manual-baseline mode).
-- **Pluggable extractor:** `EXTRACTOR_PROVIDER` env var selects `rule_based` (default), `llm` (stub — not yet implemented), or `hybrid`. Set on the worker. Code in `apps/worker/worker/extractors/`.
+- **Pluggable extractor:** `EXTRACTOR_PROVIDER` env var selects `rule_based` (default), `llm` (stub — not yet implemented), or `hybrid`. Set on the worker. Code in `apps/worker/worker/extractors/`. The LLM provider is intentionally undecided — the `ExtractorProvider` interface in `base.py` must support both hosted APIs (Claude) and local models (Ollama/llama.cpp) via a swappable backend without changing the calling code.
 - **Provenance tracking** is maintained at document, page, and row level via `ProvenanceLink` records
 - **Trust-first publication model:** documents go through an admin review queue (`pending` → `in_review` → `approved`) before being included in a release
 - **Shared contracts:** TypeScript types in `packages/shared-ts`, Python S3 utilities in `packages/shared-py/shared_py/storage.py`
@@ -110,7 +110,9 @@ alembic revision --autogenerate -m "description" # Create migration
 5. `POST /api/v1/admin/releases/publish` with `release_version="baseline-v1"` to lock the baseline
 6. Set `AUTO_FETCHERS_ENABLED=true` on the worker and restart beat to begin weekly refreshes
 
-### Key New Files (manual-baseline feature)
+### Key New Files (manual-baseline feature — TO BE IMPLEMENTED)
+
+> These files are **planned but not yet created**. The architecture is confirmed; implementation is pending.
 
 | File | Purpose |
 |------|---------|
@@ -118,7 +120,12 @@ alembic revision --autogenerate -m "description" # Create migration
 | `apps/api/app/models/canonical.py` | `IngestionMode` enum + two new columns on `SourceDocument` |
 | `apps/api/app/api/v1/review.py` | `POST /admin/documents/upload` endpoint |
 | `apps/api/app/services/admin_review_service.py` | `create_manual_upload()` service method |
-| `apps/worker/worker/extractors/` | `base.py`, `rule_based.py`, `llm.py` (stub), `hybrid.py`, `validators.py`, `factory.py` |
+| `apps/worker/worker/extractors/base.py` | `ExtractorProvider` ABC — swap-friendly interface for rule-based, Claude API, or local Ollama backends |
+| `apps/worker/worker/extractors/rule_based.py` | Wraps existing per-source parsers (RBI, AP Finance, CAG) |
+| `apps/worker/worker/extractors/llm.py` | Stub — LLM model TBD (Claude API or local); implement once model is chosen |
+| `apps/worker/worker/extractors/hybrid.py` | Calls LLM extractor, validates with rule-based confidence checks |
+| `apps/worker/worker/extractors/validators.py` | Sanity checks: column totals, basis_tag enum, value ranges |
+| `apps/worker/worker/extractors/factory.py` | Reads `EXTRACTOR_PROVIDER` env var, returns correct implementation |
 | `apps/worker/worker/tasks/manual_upload.py` | `parse_uploaded_document` Celery task |
 | `apps/web/components/admin/admin-upload.tsx` | Upload form component |
 | `apps/web/app/admin/upload/page.tsx` | Upload page route |
