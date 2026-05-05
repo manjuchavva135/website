@@ -1,0 +1,1483 @@
+{
+  "nodes": [
+    {
+      "id": "readme_public_finance_platform",
+      "label": "Andhra Pradesh Public Finance Transparency Platform",
+      "file_type": "document",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_nextjs_web",
+      "label": "Next.js Public Portal (apps/web)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_fastapi",
+      "label": "FastAPI Publishable API (apps/api)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_celery_worker",
+      "label": "Celery Ingestion Worker (apps/worker)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_shared_ts",
+      "label": "Shared TypeScript Contracts (packages/shared-ts)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_shared_py",
+      "label": "Shared Python Utilities S3 Adapter (packages/shared-py)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_rbi",
+      "label": "Reserve Bank of India (RBI)",
+      "file_type": "document",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_ap_finance",
+      "label": "Andhra Pradesh Finance Department",
+      "file_type": "document",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_cag",
+      "label": "Comptroller and Auditor General of India (CAG)",
+      "file_type": "document",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_postgres",
+      "label": "PostgreSQL Database",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_redis",
+      "label": "Redis Queue and Cache",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_s3_storage",
+      "label": "S3-Compatible Object Storage",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_alembic",
+      "label": "Alembic Database Migrations",
+      "file_type": "code",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_ingestion_flow",
+      "label": "Ingestion Flow (fetch_official_sources)",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_provenance",
+      "label": "Provenance Tracking (document/page/row level)",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "northflank_service",
+      "label": "Northflank Celery Worker Service",
+      "file_type": "document",
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "northflank_backfill_cmd",
+      "label": "Backfill Command (worker.commands.backfill)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "northflank_task_ap_finance",
+      "label": "Celery Task: fetch_ap_finance_data",
+      "file_type": "code",
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "northflank_task_rbi",
+      "label": "Celery Task: fetch_rbi_borrowing_data",
+      "file_type": "code",
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "northflank_task_ingest",
+      "label": "Celery Task: fetch_official_sources",
+      "file_type": "code",
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vercel_deployment",
+      "label": "Vercel Deployment (web + API services)",
+      "file_type": "document",
+      "source_file": "public-finance-platform/VERCEL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vercel_env_pinning",
+      "label": "Vercel Entrypoint Env Pinning (AUTO_CREATE_SCHEMA=false)",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/VERCEL.md",
+      "source_location": "rationale",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "operations_runbook",
+      "label": "Operations Runbook (OPERATIONS.md)",
+      "file_type": "document",
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "operations_daily_ingestion",
+      "label": "Daily Ingestion Workflow",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "operations_immutable_release",
+      "label": "Immutable Dataset Release Policy",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "operations_idempotency",
+      "label": "Celery Idempotency Locks and Deterministic Task IDs",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "operations_parser_anomaly",
+      "label": "Parser Anomaly Alerting",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "operations_rate_limit",
+      "label": "Public API Rate Limiting",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "operations_correlation_id",
+      "label": "X-Correlation-ID Request Tracing",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "admin_ui_handoff",
+      "label": "Admin UI Handoff Spec",
+      "file_type": "document",
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "admin_review_queue",
+      "label": "Admin Review Queue (document workflow state machine)",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "admin_fact_decision",
+      "label": "Extracted Fact Approve/Reject Decision",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "admin_release_publish",
+      "label": "Dataset Release Publish API Endpoint",
+      "file_type": "code",
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "admin_audit_trail",
+      "label": "Audit Trail (review_actions table)",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "admin_conflict_compare",
+      "label": "Source Conflict Comparison Endpoint",
+      "file_type": "code",
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "req_dev_black",
+      "label": "black (Python formatter)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/requirements-dev.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "req_dev_ruff",
+      "label": "ruff (Python linter)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/requirements-dev.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "req_dev_pytest",
+      "label": "pytest (Python test framework)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/requirements-dev.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "req_api_fastapi",
+      "label": "FastAPI framework",
+      "file_type": "code",
+      "source_file": "public-finance-platform/apps/api/requirements.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "req_api_sqlalchemy",
+      "label": "SQLAlchemy 2 ORM",
+      "file_type": "code",
+      "source_file": "public-finance-platform/apps/api/requirements.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "req_api_pydantic",
+      "label": "Pydantic v2",
+      "file_type": "code",
+      "source_file": "public-finance-platform/apps/api/requirements.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "req_api_psycopg",
+      "label": "psycopg (PostgreSQL driver)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/apps/api/requirements.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "req_worker_pypdf",
+      "label": "pypdf (PDF parsing library)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/apps/worker/requirements.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "req_worker_bs4",
+      "label": "beautifulsoup4 (HTML parsing library)",
+      "file_type": "code",
+      "source_file": "public-finance-platform/apps/worker/requirements.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "fixture_ap_budget_html",
+      "label": "AP Finance Budget Summary HTML Fixture",
+      "file_type": "document",
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/ap_finance/budget_summary.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "fixture_rbi_anti_bot_html",
+      "label": "RBI Anti-Bot CAPTCHA HTML Fixture",
+      "file_type": "document",
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/anti_bot.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "fixture_rbi_sdl_notification_html",
+      "label": "RBI SDL Auction Notification HTML Fixture",
+      "file_type": "document",
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/sdl_notification.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "fixture_cag_finance_accounts_pdf",
+      "label": "CAG Finance Accounts Vol I PDF Fixture",
+      "file_type": "paper",
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/cag/finance_accounts_vol_i.pdf",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "fixture_cag_monthly_indicators_pdf",
+      "label": "CAG Monthly Key Indicators PDF Fixture",
+      "file_type": "paper",
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/cag/monthly_key_indicators.pdf",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "fixture_rbi_sdl_result_pdf",
+      "label": "RBI SDL Auction Result PDF Fixture",
+      "file_type": "paper",
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/sdl_result.pdf",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_sdl",
+      "label": "State Development Loans (SDL)",
+      "file_type": "rationale",
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/sdl_notification.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_ap_budget",
+      "label": "Andhra Pradesh Budget in Brief 2025-26",
+      "file_type": "document",
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/ap_finance/budget_summary.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_nextjs_web",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_fastapi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_celery_worker",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_shared_ts",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_shared_py",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_rbi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_ap_finance",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_cag",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_postgres",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_redis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_s3_storage",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "readme_alembic",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "northflank_service",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_public_finance_platform",
+      "target": "vercel_deployment",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_ingestion_flow",
+      "target": "readme_celery_worker",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_ingestion_flow",
+      "target": "readme_s3_storage",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_ingestion_flow",
+      "target": "readme_postgres",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_ingestion_flow",
+      "target": "readme_provenance",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_service",
+      "target": "readme_celery_worker",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_service",
+      "target": "readme_redis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_service",
+      "target": "readme_postgres",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_service",
+      "target": "readme_s3_storage",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_service",
+      "target": "northflank_backfill_cmd",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_service",
+      "target": "northflank_task_ap_finance",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_service",
+      "target": "northflank_task_rbi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_service",
+      "target": "northflank_task_ingest",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_task_ap_finance",
+      "target": "readme_ap_finance",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_task_rbi",
+      "target": "readme_rbi",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_task_ingest",
+      "target": "readme_ingestion_flow",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/NORTHFLANK.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vercel_deployment",
+      "target": "readme_nextjs_web",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/VERCEL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vercel_deployment",
+      "target": "readme_fastapi",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/VERCEL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vercel_deployment",
+      "target": "readme_alembic",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/VERCEL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vercel_deployment",
+      "target": "northflank_service",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/VERCEL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "vercel_env_pinning",
+      "target": "vercel_deployment",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/VERCEL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "readme_fastapi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "readme_celery_worker",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "readme_postgres",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "readme_redis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "readme_s3_storage",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "operations_daily_ingestion",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "operations_immutable_release",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "operations_idempotency",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "operations_parser_anomaly",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "operations_rate_limit",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_runbook",
+      "target": "operations_correlation_id",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_idempotency",
+      "target": "readme_redis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_daily_ingestion",
+      "target": "northflank_task_ap_finance",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_daily_ingestion",
+      "target": "northflank_task_rbi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_daily_ingestion",
+      "target": "northflank_task_ingest",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_immutable_release",
+      "target": "readme_s3_storage",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_immutable_release",
+      "target": "readme_postgres",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "admin_ui_handoff",
+      "target": "admin_review_queue",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "admin_ui_handoff",
+      "target": "admin_fact_decision",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "admin_ui_handoff",
+      "target": "admin_release_publish",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "admin_ui_handoff",
+      "target": "admin_audit_trail",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "admin_ui_handoff",
+      "target": "admin_conflict_compare",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "admin_ui_handoff",
+      "target": "readme_fastapi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "admin_review_queue",
+      "target": "readme_postgres",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "admin_release_publish",
+      "target": "operations_immutable_release",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "admin_audit_trail",
+      "target": "readme_postgres",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_fastapi",
+      "target": "req_api_fastapi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/api/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_fastapi",
+      "target": "req_api_sqlalchemy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/api/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_fastapi",
+      "target": "req_api_pydantic",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/api/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_fastapi",
+      "target": "req_api_psycopg",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/api/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_celery_worker",
+      "target": "req_worker_pypdf",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/worker/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_celery_worker",
+      "target": "req_worker_bs4",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/worker/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_celery_worker",
+      "target": "req_dev_pytest",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/requirements-dev.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_celery_worker",
+      "target": "req_dev_black",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/requirements-dev.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_celery_worker",
+      "target": "req_dev_ruff",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/requirements-dev.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_task_ap_finance",
+      "target": "fixture_ap_budget_html",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/ap_finance/budget_summary.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_task_rbi",
+      "target": "fixture_rbi_sdl_notification_html",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/sdl_notification.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_task_rbi",
+      "target": "fixture_rbi_anti_bot_html",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/anti_bot.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_task_rbi",
+      "target": "fixture_rbi_sdl_result_pdf",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/sdl_result.pdf",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_task_ingest",
+      "target": "fixture_cag_finance_accounts_pdf",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/cag/finance_accounts_vol_i.pdf",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "northflank_task_ingest",
+      "target": "fixture_cag_monthly_indicators_pdf",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/cag/monthly_key_indicators.pdf",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "req_worker_pypdf",
+      "target": "fixture_cag_finance_accounts_pdf",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public-finance-platform/apps/worker/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "req_worker_pypdf",
+      "target": "fixture_rbi_sdl_result_pdf",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public-finance-platform/apps/worker/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "req_worker_bs4",
+      "target": "fixture_ap_budget_html",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public-finance-platform/apps/worker/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "req_worker_bs4",
+      "target": "fixture_rbi_sdl_notification_html",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public-finance-platform/apps/worker/requirements.txt",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "fixture_rbi_sdl_notification_html",
+      "target": "concept_sdl",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/sdl_notification.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "fixture_rbi_sdl_result_pdf",
+      "target": "concept_sdl",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/sdl_result.pdf",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "fixture_ap_budget_html",
+      "target": "concept_ap_budget",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/ap_finance/budget_summary.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "operations_immutable_release",
+      "target": "admin_release_publish",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_provenance",
+      "target": "admin_audit_trail",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "public-finance-platform/README.md",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "operations_idempotency",
+      "target": "northflank_backfill_cmd",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public-finance-platform/OPERATIONS.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "fixture_rbi_anti_bot_html",
+      "target": "northflank_task_rbi",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "public-finance-platform/apps/worker/tests/fixtures/rbi/anti_bot.html",
+      "source_location": null,
+      "weight": 0.65
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "ingestion_pipeline",
+      "label": "End-to-End Ingestion Pipeline",
+      "nodes": [
+        "readme_celery_worker",
+        "readme_redis",
+        "readme_s3_storage",
+        "readme_postgres"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "public-finance-platform/README.md"
+    },
+    {
+      "id": "admin_review_publish_flow",
+      "label": "Admin Review and Immutable Release Flow",
+      "nodes": [
+        "admin_review_queue",
+        "admin_fact_decision",
+        "admin_release_publish",
+        "admin_audit_trail"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "public-finance-platform/apps/web/docs/admin-ui-handoff.md"
+    },
+    {
+      "id": "multi_source_ingestion",
+      "label": "Multi-Source Ingestion Tasks (RBI, AP Finance, CAG)",
+      "nodes": [
+        "northflank_task_rbi",
+        "northflank_task_ap_finance",
+        "northflank_task_ingest"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "public-finance-platform/NORTHFLANK.md"
+    }
+  ],
+  "input_tokens": 8500,
+  "output_tokens": 4200
+}

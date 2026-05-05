@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cd \"c:\\\\Users\\\\wicon_user\\\\Downloads\\\\website\"; Get-Content graphify-out\\\\.graphify_uncached.txt | Where-Object { $_ -match '\\\\.\\(md|txt|html|pdf\\)$' })",
+      "PowerShell(if \\(-not \\(Test-Path \"C:\\\\Users\\\\wicon_user\\\\Downloads\\\\website\\\\graphify-out\"\\)\\) { New-Item -ItemType Directory -Path \"C:\\\\Users\\\\wicon_user\\\\Downloads\\\\website\\\\graphify-out\" })"
+    ]
+  }
+}
