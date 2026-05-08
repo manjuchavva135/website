@@ -90,6 +90,26 @@ services:
     volumes:
       - minio_data:/data
 
+  # Exposes the local API to the public internet so a Vercel-hosted frontend
+  # can hit it. Set NGROK_AUTHTOKEN in .env. With a free static domain set
+  # NGROK_DOMAIN=<your>.ngrok-free.app for a stable URL across restarts.
+  # Disable by removing the ``profiles: [tunnel]`` line below or by not
+  # setting NGROK_AUTHTOKEN; otherwise the service refuses to start.
+  ngrok:
+    image: ngrok/ngrok:latest
+    profiles: ["tunnel"]
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    command: >-
+      http
+      --log=stdout
+      ${NGROK_DOMAIN:+--domain=${NGROK_DOMAIN}}
+      api:8000
+    depends_on:
+      - api
+    ports:
+      - "4040:4040"
+
 volumes:
   pgdata:
   minio_data:
