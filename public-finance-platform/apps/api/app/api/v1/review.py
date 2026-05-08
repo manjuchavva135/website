@@ -1,14 +1,29 @@
 import hashlib
+import json
 from datetime import date
+from decimal import Decimal
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Query, UploadFile
 from shared_py import S3StorageAdapter
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.auth import AdminPrincipal, require_admin
 from app.core.config import settings
 from app.db.session import get_db
-from app.models import DatasetRelease, ReviewAction, SourceDocument
+from app.models import (
+    BasisTag,
+    DatasetRelease,
+    DebtEvent,
+    DebtEventType,
+    DebtInstrument,
+    DebtPosition,
+    ReconciliationRun,
+    ReviewAction,
+    RunStatus,
+    SourceDocument,
+    SourceFetchRun,
+)
 from app.schemas import (
     AdminConflictComparison,
     AdminDocumentDetail,
@@ -389,6 +404,168 @@ def release_history(
         )
         for item in rows
     ]
+
+
+# ---------------------------------------------------------------------- #
+# Phase 7: scraper control + debt summary                                #
+# ---------------------------------------------------------------------- #
+
+_SCRAPER_SOURCE_NAME = "rbi_press_release"
+_SCRAPER_TASK_NAME = "worker.tasks.rbi_ingest.scrape_sdl_auction_press_releases"
+
+
+@router.post("/scraper/trigger")
+def trigger_scraper(
+    _: AdminPrincipal = Depends(require_admin),
+) -> dict[str, object]:
+    """Fire the RBI press-release scraper now (Celery async)."""
+    if not settings.dispatch_admin_parser_jobs:
+        raise HTTPException(
+            status_code=503,
+            detail="Celery dispatch disabled (set DISPATCH_ADMIN_PARSER_JOBS=true).",
+        )
+    from celery import Celery
+
+    Celery(
+        broker=settings.celery_broker_url, backend=settings.celery_result_backend
+    ).send_task(_SCRAPER_TASK_NAME)
+    return {"status": "queued", "task": _SCRAPER_TASK_NAME}
+
+
+@router.get("/scraper/status")
+def scraper_status(
+    db: Session = Depends(get_db),
+    _: AdminPrincipal = Depends(require_admin),
+) -> dict[str, object]:
+    """Return the last 10 SourceFetchRun rows for the press-release scraper."""
+    rows = db.scalars(
+        select(SourceFetchRun)
+        .where(SourceFetchRun.source_name == _SCRAPER_SOURCE_NAME)
+        .order_by(SourceFetchRun.started_at.desc())
+        .limit(10)
+    ).all()
+    items = [
+        {
+            "id": r.id,
+            "status": str(r.status),
+            "started_at": r.started_at.isoformat() if r.started_at else None,
+            "completed_at": r.completed_at.isoformat() if r.completed_at else None,
+            "error_message": r.error_message,
+            "response_headers_json": r.response_headers_json,
+            "requested_url": r.requested_url,
+        }
+        for r in rows
+    ]
+    return {
+        "source_name": _SCRAPER_SOURCE_NAME,
+        "task_name": _SCRAPER_TASK_NAME,
+        "runs": items,
+    }
+
+
+@router.get("/debt/summary")
+def debt_summary(
+    db: Session = Depends(get_db),
+    _: AdminPrincipal = Depends(require_admin),
+) -> dict[str, object]:
+    """Aggregate AP outstanding SDL debt from the latest DebtPositions, with
+    a maturity-bucket breakdown for the admin dashboard chart."""
+    today = date.today()
+    instruments = db.scalars(
+        select(DebtInstrument).where(
+            DebtInstrument.issuer_name.ilike("%andhra%pradesh%")
+        )
+    ).all()
+
+    buckets: dict[str, Decimal] = {b: Decimal("0") for b in _BUCKET_ORDER}
+    instruments_authoritative = 0
+    instruments_computed = 0
+    total = Decimal("0")
+
+    for inst in instruments:
+        position = db.scalar(
+            select(DebtPosition)
+            .where(DebtPosition.debt_instrument_id == inst.id)
+            .order_by(DebtPosition.as_of_date.desc().nullslast())
+            .limit(1)
+        )
+        if position is not None:
+            principal = position.outstanding_principal
+            instruments_authoritative += 1
+        else:
+            issued, redeemed = _sum_events(db, inst.id)
+            principal = issued - redeemed
+            if principal <= 0:
+                continue
+            instruments_computed += 1
+
+        total += principal
+        bucket = _maturity_bucket(today, inst.maturity_date)
+        buckets[bucket] = buckets[bucket] + principal
+
+    last_run = db.scalar(
+        select(ReconciliationRun)
+        .where(ReconciliationRun.run_name.like("ap_%"))
+        .order_by(ReconciliationRun.started_at.desc())
+        .limit(1)
+    )
+
+    return {
+        "total_outstanding_inr_crore": str(total),
+        "instruments_authoritative": instruments_authoritative,
+        "instruments_computed": instruments_computed,
+        "buckets": [
+            {"label": label, "amount": str(buckets[label])} for label in _BUCKET_ORDER
+        ],
+        "last_reconciliation": {
+            "id": last_run.id if last_run else None,
+            "name": last_run.run_name if last_run else None,
+            "status": str(last_run.status) if last_run else None,
+            "started_at": last_run.started_at.isoformat() if last_run and last_run.started_at else None,
+            "completed_at": last_run.completed_at.isoformat() if last_run and last_run.completed_at else None,
+            "scope_json": last_run.scope_json if last_run else None,
+        },
+    }
+
+
+_BUCKET_ORDER = ["matured", "≤1y", "1-5y", "5-10y", "10-20y", ">20y"]
+
+
+def _maturity_bucket(today: date, maturity: date | None) -> str:
+    if maturity is None:
+        return ">20y"
+    days = (maturity - today).days
+    if days < 0:
+        return "matured"
+    years = days / 365.25
+    if years <= 1:
+        return "≤1y"
+    if years <= 5:
+        return "1-5y"
+    if years <= 10:
+        return "5-10y"
+    if years <= 20:
+        return "10-20y"
+    return ">20y"
+
+
+def _sum_events(db: Session, instrument_id: int) -> tuple[Decimal, Decimal]:
+    rows = db.execute(
+        select(DebtEvent.event_type, func.coalesce(func.sum(DebtEvent.amount), 0))
+        .where(
+            DebtEvent.debt_instrument_id == instrument_id,
+            DebtEvent.basis_tag == BasisTag.actual,
+        )
+        .group_by(DebtEvent.event_type)
+    ).all()
+    issued = Decimal("0")
+    redeemed = Decimal("0")
+    for event_type, amount in rows:
+        if event_type in {DebtEventType.issue, DebtEventType.notification}:
+            issued += Decimal(str(amount))
+        elif event_type == DebtEventType.redemption:
+            redeemed += Decimal(str(amount))
+    return issued, redeemed
 
 
 @router.get("/audit-trail", response_model=list[ReviewActionResponse])

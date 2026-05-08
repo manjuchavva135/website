@@ -298,4 +298,51 @@ export const adminApi = {
 
     return (await response.json()) as ManualUploadResponse;
   },
+
+  triggerScraper: (credentials: AdminCredentials) =>
+    adminFetch<{ status: string; task: string }>(credentials, "/scraper/trigger", {
+      method: "POST",
+    }),
+
+  scraperStatus: (credentials: AdminCredentials) =>
+    adminFetch<ScraperStatusResponse>(credentials, "/scraper/status"),
+
+  debtSummary: (credentials: AdminCredentials) =>
+    adminFetch<DebtSummaryResponse>(credentials, "/debt/summary"),
+};
+
+export type ScraperRun = {
+  id: number;
+  status: string;
+  started_at: string | null;
+  completed_at: string | null;
+  error_message: string | null;
+  response_headers_json: string | null;
+  requested_url: string;
+};
+
+export type ScraperStatusResponse = {
+  source_name: string;
+  task_name: string;
+  runs: ScraperRun[];
+};
+
+export type DebtSummaryBucket = {
+  label: string;
+  amount: string;
+};
+
+export type DebtSummaryResponse = {
+  total_outstanding_inr_crore: string;
+  instruments_authoritative: number;
+  instruments_computed: number;
+  buckets: DebtSummaryBucket[];
+  last_reconciliation: {
+    id: number | null;
+    name: string | null;
+    status: string | null;
+    started_at: string | null;
+    completed_at: string | null;
+    scope_json: string | null;
+  };
 };
