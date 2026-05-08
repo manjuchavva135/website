@@ -8,10 +8,26 @@ import { useAdminAuth } from "./admin-auth";
 import { AdminCard, AdminError } from "./admin-ui";
 
 const SOURCE_FAMILIES = [
-  { value: "rbi", label: "RBI" },
-  { value: "ap_finance", label: "AP Finance" },
-  { value: "cag", label: "CAG" },
-  { value: "other", label: "Other" },
+  {
+    value: "rbi_auction",
+    label: "RBI SDL auction",
+    hint: "Auction notification or result PDF (RBI press release).",
+  },
+  {
+    value: "outstanding_securities",
+    label: "Outstanding state securities",
+    hint: "RBI's authoritative outstanding-debt PDF (OUTSTANDINGSGSDATA…).",
+  },
+  {
+    value: "ap_budget",
+    label: "AP Budget volume",
+    hint: "Andhra Pradesh budget volume PDF (e.g. 2024-25 Vol-I).",
+  },
+  {
+    value: "other",
+    label: "Other",
+    hint: "Generic document — parser will only extract raw pages.",
+  },
 ] as const;
 
 type UploadState =
@@ -25,7 +41,7 @@ export function AdminUploadView() {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const [sourceFamily, setSourceFamily] = useState<string>("rbi");
+  const [sourceFamily, setSourceFamily] = useState<string>("rbi_auction");
   const [sourceName, setSourceName] = useState("");
   const [publicationDate, setPublicationDate] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
@@ -114,6 +130,9 @@ export function AdminUploadView() {
               </option>
             ))}
           </select>
+          <p className="mt-1.5 text-xs text-slate-500">
+            {SOURCE_FAMILIES.find((f) => f.value === sourceFamily)?.hint}
+          </p>
         </div>
 
         {/* Source name */}

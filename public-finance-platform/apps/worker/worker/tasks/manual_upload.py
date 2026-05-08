@@ -87,11 +87,18 @@ def parse_uploaded_document(*, document_id: int, source_family: str) -> dict[str
 
             session.commit()
 
+            recon_run_id = _maybe_trigger_reconciliation(source_family)
+
             logger.info(
-                "parse_uploaded_document completed document_id=%s rows=%s warnings=%s",
-                document_id, rows_saved, len(result.warnings),
+                "parse_uploaded_document completed document_id=%s rows=%s warnings=%s recon=%s",
+                document_id, rows_saved, len(result.warnings), recon_run_id,
             )
-            return {"status": "ok", "document_id": document_id, "rows_extracted": rows_saved}
+            return {
+                "status": "ok",
+                "document_id": document_id,
+                "rows_extracted": rows_saved,
+                "reconciliation_run_id": recon_run_id,
+            }
 
         except Exception as exc:
             parser_run.status = RunStatus.failed
@@ -103,6 +110,26 @@ def parse_uploaded_document(*, document_id: int, source_family: str) -> dict[str
             ))
             session.commit()
             raise
+
+
+_DEBT_FAMILIES = {"rbi_auction", "outstanding_securities"}
+
+
+def _maybe_trigger_reconciliation(source_family: str) -> int | None:
+    """Re-run AP reconciliation when a debt-related upload lands.
+
+    Reads existing AP DebtEvents + DebtPositions from the DB and rewrites
+    a fresh ReconciliationRun. Non-debt uploads (e.g. ap_budget) skip this.
+    """
+    if source_family not in _DEBT_FAMILIES:
+        return None
+    try:
+        from worker.tasks.reconcile_ap import recompute_ap_reconciliation
+
+        return recompute_ap_reconciliation()
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("post-upload reconciliation failed: %s", exc)
+        return None
 
 
 # --------------------------------------------------------------------------- #
