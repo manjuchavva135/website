@@ -4,11 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Structure
 
-This is a monorepo containing two distinct projects:
+This repository contains a production full-stack web app for publishing India's public finance data (Andhra Pradesh), using a monorepo structure within `/public-finance-platform`.
 
-1. **`/agency-agents`** — A reference library of 144+ AI agent personality profiles in Markdown format, organized into 12 divisions (Engineering, Design, Marketing, Sales, etc.). No build step required; use `scripts/install.sh` to install agents into Claude Code or other AI tools.
+### Data Sources
 
-2. **`/public-finance-platform`** — A production full-stack web app for publishing India's public finance data (Andhra Pradesh). This is the primary application.
+The `/Data_website` folder contains raw source documents (51 PDF files, ~101MB) organized by source and fiscal year:
+- **Ap_Budget_data/** — Andhra Pradesh Budget documents (2014-15 through 2026-27, multi-volume PDFs per fiscal year)
+- **Rbi/** — Reserve Bank of India state securities and debt data
+- **Outstanding_securities_state/** — State-level outstanding securities data
+
+These documents are the inputs to the ingestion pipeline. The worker parses these PDFs to extract facts, which are stored with provenance tracking and made available through the API.
 
 ## Public Finance Platform
 
@@ -76,9 +81,13 @@ pnpm lint             # Lint everything
 pnpm test             # Test everything
 ```
 
-**Run a single Python test:**
+**Run a single test:**
 ```bash
+# Python
 cd public-finance-platform && pytest apps/api/tests/test_foo.py::test_bar -v
+
+# JavaScript/Vitest
+cd public-finance-platform/apps/web && pnpm test -- app/page.test.tsx
 ```
 
 ### Database Migrations
