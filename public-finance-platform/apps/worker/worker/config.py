@@ -29,16 +29,11 @@ class WorkerSettings(BaseSettings):
     s3_secret_key: str = Field(...)
     s3_use_ssl: bool = False
 
-    rbi_source_url: str = "https://rbi.org.in/"
-    ap_finance_source_url: str = "https://finance.ap.gov.in/"
-    cag_source_url: str = "https://cag.gov.in/"
+    rbi_press_release_url: str = "https://rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx"
     log_level: str = "INFO"
     idempotency_lock_ttl_seconds: int = 86400
     parser_anomaly_warning_threshold: int = 10
     parser_anomaly_manual_review_threshold: int = 1
-
-    # Set to True after baseline-v1 is published to re-enable weekly auto-fetchers.
-    auto_fetchers_enabled: bool = False
 
     # Extractor to use for manual uploads. Options: rule_based | llm | hybrid.
     extractor_provider: str = "rule_based"

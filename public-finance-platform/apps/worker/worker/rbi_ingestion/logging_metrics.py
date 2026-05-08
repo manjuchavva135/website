@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import asdict, dataclass
 
-from worker.crawler.observability import get_crawler_logger, log_event
+_logger = logging.getLogger("worker.rbi_ingestion")
 
 
 @dataclass(slots=True)
@@ -22,4 +23,4 @@ class RbiIngestionMetrics:
 
 
 def emit_pipeline_event(event: str, **fields: object) -> None:
-    log_event(get_crawler_logger(), event, **fields)
+    _logger.info("rbi_ingestion.%s %s", event, fields)

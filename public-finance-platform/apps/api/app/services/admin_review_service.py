@@ -62,9 +62,9 @@ FACT_TABLES = {
 
 
 RUNNER_TASK_BY_SOURCE = {
-    "rbi": "worker.tasks.rbi_ingest.fetch_rbi_borrowing_data",
-    "ap_finance": "worker.tasks.ap_finance_ingest.fetch_ap_finance_data",
-    "cag": "worker.tasks.ingest.fetch_official_sources",
+    "rbi_auction": "worker.tasks.manual_upload.parse_uploaded_document",
+    "outstanding_securities": "worker.tasks.manual_upload.parse_uploaded_document",
+    "ap_budget": "worker.tasks.manual_upload.parse_uploaded_document",
 }
 
 
