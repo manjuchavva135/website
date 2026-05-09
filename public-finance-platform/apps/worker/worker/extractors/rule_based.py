@@ -8,9 +8,11 @@ class RuleBasedExtractor:
     """Dispatches to the deterministic parsers by source_family.
 
     Supported families:
-      - rbi_auction         : RBI SDL auction PDFs (filtered to Andhra Pradesh rows)
+      - rbi_auction            : RBI SDL auction PDFs (filtered to Andhra Pradesh rows)
       - outstanding_securities : RBI outstanding state-securities PDFs (AP only)
-      - ap_budget           : Andhra Pradesh budget volume PDFs
+      - rbi_state_finances     : RBI annual State Finances statement tables
+                                 (Statements 2/13/16/19/21/22/23, Appendix I)
+      - ap_budget              : Andhra Pradesh budget volume PDFs
     """
 
     name = "rule_based"
@@ -33,6 +35,8 @@ class RuleBasedExtractor:
             self._extract_rbi_auction(content, document_type, source_url, result)
         elif source_family == "outstanding_securities":
             self._extract_outstanding(content, document_type, source_url, result)
+        elif source_family == "rbi_state_finances":
+            self._extract_state_finances(content, document_type, source_url, result)
         elif source_family == "ap_budget":
             self._extract_ap_budget(content, document_type, source_url, result)
         else:
@@ -70,6 +74,20 @@ class RuleBasedExtractor:
             return
         positions = parse_outstanding_securities_bytes(content, source_url)
         result.debt_positions.extend(positions)
+
+    def _extract_state_finances(
+        self, content: bytes, document_type: str, source_url: str, result: ExtractionResult
+    ) -> None:
+        if document_type != "pdf":
+            result.warnings.append(
+                f"RBI state finances: unsupported document_type '{document_type}'"
+            )
+            return
+        from worker.rbi_ingestion.state_finances_parser import parse_state_finances_pdf
+        parsed = parse_state_finances_pdf(content, source_url=source_url)
+        result.fiscal_metrics.extend(parsed.fiscal_metrics)
+        result.debt_positions.extend(parsed.debt_positions)
+        result.warnings.extend(parsed.warnings)
 
     def _extract_ap_budget(
         self, content: bytes, document_type: str, source_url: str, result: ExtractionResult

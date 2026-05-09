@@ -23,7 +23,11 @@ except Exception:  # noqa: BLE001
 
 _AP_RE = re.compile(r"\bandhra\s+pradesh\b", re.IGNORECASE)
 _AS_OF_RE = re.compile(
-    r"as\s+on\s+(\d{1,2}[-/\s][A-Za-z]+[-/\s]\d{2,4}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4})",
+    r"as\s+on\s+("
+    r"\d{1,2}[-/\s][A-Za-z]+[-/\s]\d{2,4}"     # 06-May-2026 / 06 May 2026
+    r"|\d{1,2}[-/]\d{1,2}[-/]\d{2,4}"          # 06/05/2026
+    r"|[A-Za-z]+\s+\d{1,2},\s*\d{4}"           # May 06, 2026
+    r")",
     re.IGNORECASE,
 )
 
@@ -53,6 +57,7 @@ def parse_outstanding_securities_bytes(
 
     positions: list[OutstandingPosition] = []
     as_of_default: date | None = None
+    sticky_cols: dict[str, int] = {}
 
     try:
         with pdfplumber.open(BytesIO(payload)) as pdf:
@@ -64,11 +69,19 @@ def parse_outstanding_securities_bytes(
                 for table in page.extract_tables() or []:
                     if not table:
                         continue
-                    header = [_norm(c) for c in (table[0] or [])]
-                    cols = _map_columns(header)
+                    header_idx = _find_header_row(table)
+                    if header_idx is not None:
+                        header = [_norm(c) for c in (table[header_idx] or [])]
+                        cols = _map_columns(header)
+                        if cols:
+                            sticky_cols = cols
+                        data_start = header_idx + 1
+                    else:
+                        cols = sticky_cols
+                        data_start = 0
                     if not cols:
                         continue
-                    for raw_row in table[1:]:
+                    for raw_row in table[data_start:]:
                         if not raw_row:
                             continue
                         if not _row_is_ap(raw_row, cols.get("state")):
@@ -85,14 +98,38 @@ def _norm(value: object) -> str:
     return compact_whitespace(str(value or "")).lower()
 
 
+def _find_header_row(table: list[list[str | None]]) -> int | None:
+    """Return the index of the row that looks like the column header.
+
+    Heuristic: a header has *multiple* short label cells. A leading title row
+    (e.g. "List of State Government Securities outstanding as on ...") is a
+    single long string in one cell. We prefer rows containing 'isin' explicitly.
+    """
+    for idx, row in enumerate(table[:6]):
+        cells = [_norm(c) for c in (row or [])]
+        non_empty = [c for c in cells if c]
+        if any("isin" in c for c in non_empty):
+            return idx
+    # Fallback: row with >=3 short label cells where at least one mentions
+    # 'state' and another mentions 'outstanding'.
+    for idx, row in enumerate(table[:6]):
+        cells = [_norm(c) for c in (row or [])]
+        non_empty = [c for c in cells if c and len(c) <= 60]
+        if len(non_empty) >= 3 and any("state" in c for c in non_empty) and any("outstanding" in c for c in non_empty):
+            return idx
+    return None
+
+
 def _map_columns(header: list[str]) -> dict[str, int]:
     aliases = {
-        "state": ["state", "state government", "issuer"],
+        "state": ["state government", "state", "issuer"],
         "isin": ["isin"],
-        "name": ["security", "issue", "description", "name"],
+        "name": ["nomenclature", "security", "issue", "description", "name"],
         "coupon": ["coupon", "rate of interest", "interest rate"],
-        "maturity": ["maturity date", "maturity"],
+        "issue_date": ["date of issue", "issue date"],
+        "maturity": ["date of maturity", "maturity date", "maturity"],
         "outstanding": [
+            "outstanding stock",
             "outstanding amount",
             "outstanding (rs crore)",
             "outstanding",
@@ -134,12 +171,18 @@ def _row_to_position(
     name = cell("name") or "Andhra Pradesh SDL"
     isin = cell("isin")
     code = isin or _slug(name)
+    coupon = _to_decimal(cell("coupon"))
+    if coupon is None:
+        # Coupon may be embedded in the nomenclature: "6.39% ANDHRA SDL 2026".
+        m = re.match(r"\s*(\d+(?:\.\d+)?)\s*%", name)
+        if m:
+            coupon = _to_decimal(m.group(1))
     return OutstandingPosition(
         state="Andhra Pradesh",
         instrument_code=code,
         instrument_name=name,
         maturity_date=parse_date(cell("maturity")),
-        coupon_rate=_to_decimal(cell("coupon")),
+        coupon_rate=coupon,
         outstanding_principal=outstanding,
         as_of_date=as_of_default,
         source_url=source_url,

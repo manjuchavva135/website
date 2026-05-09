@@ -5,7 +5,12 @@ from datetime import datetime
 from decimal import Decimal
 
 
-DATE_FORMATS = ["%d-%m-%Y", "%d/%m/%Y", "%d.%m.%Y", "%d %b %Y", "%d %B %Y"]
+DATE_FORMATS = [
+    "%d-%m-%Y", "%d/%m/%Y", "%d.%m.%Y", "%d %b %Y", "%d %B %Y",
+    "%d-%b-%Y", "%d-%B-%Y",          # "20-May-2026"
+    "%b %d, %Y", "%B %d, %Y",        # "May 06, 2026"
+    "%d-%m-%y", "%d/%m/%y",          # 2-digit year
+]
 
 
 def parse_date(value: str) -> datetime.date | None:
