@@ -152,3 +152,91 @@ Restore procedure:
 - Admin, health, and ops endpoints are excluded.
 - Default: `PUBLIC_API_RATE_LIMIT_PER_MINUTE=600`.
 - A `429` response includes `Retry-After` and `X-Correlation-ID`.
+
+## xlsx Baseline-Refresh Procedure
+
+This procedure applies after new RBI State Finances xlsx files are published
+(typically when the annual 'State Finances: A Study of Budgets' PDF + xlsx set
+is released, usually March–May each year).
+
+### Prerequisites
+
+- Updated xlsx files placed in `Data_website/state_government_dataset/`
+- `.env` configured with correct `DATABASE_URL`, `S3_*` vars
+- `.venv` activated
+
+### One-shot reload (idempotent)
+
+```bash
+cd /home/maveric2/website/public-finance-platform
+set -a && source .env && set +a
+PYTHONPATH=apps/api:apps/worker:packages/shared-py \
+  .venv/bin/python -m worker.state_finances_xlsx.cli load \
+  --dir /home/maveric2/website/Data_website/state_government_dataset
+```
+
+The loader is **idempotent**: it upserts rows keyed on
+`(state_code, metric_code, fiscal_year, basis_tag)` for `fiscal_metrics` and
+`(isin, state_code)` for `debt_instruments`. Re-running after updating xlsx
+files safely overwrites stale values.
+
+### Verify loaded data
+
+```bash
+# Count fiscal_metric rows by metric_group
+psql "$DATABASE_URL" -c "
+  SELECT metric_group, COUNT(*) FROM fiscal_metrics
+  WHERE department_code IS NULL
+  GROUP BY metric_group ORDER BY metric_group;"
+
+# AP headline spot-check
+psql "$DATABASE_URL" -c "
+  SELECT metric_code, fiscal_year, value, basis_tag
+  FROM fiscal_metrics
+  WHERE state_code = 'AP' AND metric_code IN (
+    'total_outstanding_liabilities_pct_gsdp',
+    'gross_fiscal_deficit_pct_gsdp',
+    'own_tax_revenue_pct_gsdp'
+  )
+  ORDER BY metric_code, fiscal_year DESC
+  LIMIT 15;"
+```
+
+### After reload: publish a new release
+
+```bash
+# Bump the release version (e.g. xlsx-2026-v2) so downstream caches invalidate
+curl -X POST http://localhost:8000/api/v1/admin/releases/publish \
+  -H 'Content-Type: application/json' \
+  -d '{"release_version": "xlsx-2026-v2", "notes": "RBI State Finances 2026 update"}'
+```
+
+### Parser inventory
+
+| File (in `Data_website/state_government_dataset/`) | Parser module |
+|---|---|
+| `major_fisical_indicators.XLSX` | `major_fiscal_indicators` |
+| `revenue_deficit_and_surplus.xlsx` | `revenue_deficit_surplus` |
+| `gross_fiscal_deficit_and_surplus.xlsx` | `gross_fiscal_deficit_surplus` |
+| `interest_payments.xlsx` | `interest_payments` |
+| `tax_revenue.xlsx` | `tax_revenue` |
+| `non_tax_revenue.xlsx` | `non_tax_revenue` |
+| `total_outstanding_liabilities.xlsx` | `total_outstanding_liabilities` |
+| `total_outstanding_liabilities_pct_gsdp.xlsx` | `total_outstanding_liabilities_pct_gsdp` |
+| `composition_and_outstanding_liabilities.xlsx` | `composition_outstanding_liabilities` |
+| `market_borrowings.xlsx` | `market_borrowings` |
+| `loans_from_centre.xlsx` | `loans_from_centre` |
+| `outstanding_guarntees_of_state_governments.xlsx` | `guarantees` |
+| `maturity_profile_of_outstanding_securities_value.xlsx` | `maturity_profile_value` |
+| `maturity_profile_of_outstanding_securities_pct.xlsx` | `maturity_profile_pct` |
+| `wages_and_salaries.xlsx` | `wages_salaries` |
+| `developmental_expenditure.xlsx` | `developmental_expenditure` |
+| `non_developmental_expenditure.xlsx` | `non_developmental_expenditure` |
+| `devolution_and_transfers.xlsx` | `devolution_transfers` |
+| `interest_payments.xlsx` | `interest_payments` |
+| `operations_and_maintenance.xlsx` | `operations_maintenance` |
+| `education_expenditure_pct.xlsx` | `education_expenditure_pct` |
+| `health_expenditure_pct.xlsx` | `health_expenditure_pct` |
+| `social_sector_expenditure.xlsx` | `social_sector_expenditure` |
+| `social_sector_expenditure_pct.xlsx` | `social_sector_expenditure_pct` |
+| `outstanding_government-securities_asof_may-06-2026.xls` | `outstanding_securities_per_instrument` |

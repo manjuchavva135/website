@@ -88,7 +88,7 @@ export default function AdminDebtSummaryPage() {
                 tickFormatter={(v: number) => v.toLocaleString("en-IN")}
               />
               <Tooltip
-                formatter={(v: number) => `₹ ${v.toLocaleString("en-IN")} cr`}
+                formatter={(v) => `₹ ${Number(v).toLocaleString("en-IN")} cr`}
                 cursor={{ fill: "rgba(15, 23, 42, 0.04)" }}
               />
               <Bar dataKey="amount" fill="#0f766e" radius={[6, 6, 0, 0]} />

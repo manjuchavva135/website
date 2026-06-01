@@ -18,6 +18,7 @@ const NAV_GROUPS = [
     label: "Debt",
     links: [
       { href: "/debt-overview", label: "Debt Overview", icon: "💳" },
+      { href: "/debt-stack", label: "Debt Stack", icon: "📋" },
       { href: "/debt-issuance", label: "Debt Issuance", icon: "📤" },
       { href: "/debt-pipeline", label: "Debt Pipeline", icon: "🗓" },
       { href: "/repayments", label: "Repayments", icon: "↩" },
@@ -34,10 +35,11 @@ const NAV_GROUPS = [
   {
     label: "Reference",
     links: [
+      { href: "/peer-compare", label: "Peer Comparison", icon: "📈" },
       { href: "/sources", label: "Sources", icon: "📚" },
       { href: "/methodology", label: "Methodology", icon: "🔬" },
       { href: "/changelog", label: "Changelog", icon: "📝" },
-      { href: "/api", label: "API", icon: "⚡" },
+      { href: "/api-docs", label: "API", icon: "⚡" },
     ],
   },
   {

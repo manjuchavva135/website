@@ -18,21 +18,25 @@ type Props = { searchParams: Record<string, string | string[] | undefined> };
 
 export default async function DebtIssuancePage({ searchParams }: Props) {
   const filters = parseCommonFilters(searchParams);
-  const result = await api.debt.issues(filters);
+  // Fetch a larger window so the monthly aggregation is meaningful.
+  const result = await api.debt.issues({ ...filters, page_size: filters.page_size ?? 500 });
   const now = new Date().toISOString();
   const basis = detectBasis(result?.data ?? []) ?? filters.basis;
 
-  // Build chart data: issuance by period
-  const chartData = (result?.data ?? [])
-    .slice(0, 20)
-    .map((row) => ({
-      label:
-        (row["period_label"] as string) ??
-        (row["event_date"] as string)?.slice(0, 7) ??
-        "—",
-      amount: Number(row["amount_issued"] ?? row["amount"] ?? 0),
-    }))
-    .filter((d) => d.label !== "—");
+  // Aggregate issuance by calendar month (YYYY-MM) — sum amounts across all
+  // instruments issued in the same month rather than plotting each row.
+  const monthlyTotals = new Map<string, number>();
+  for (const row of result?.data ?? []) {
+    const date = (row["event_date"] as string | undefined) ?? "";
+    const month = date.slice(0, 7);
+    if (!month) continue;
+    const amount = Number(row["amount_issued"] ?? row["amount"] ?? 0);
+    if (!Number.isFinite(amount)) continue;
+    monthlyTotals.set(month, (monthlyTotals.get(month) ?? 0) + amount);
+  }
+  const chartData = Array.from(monthlyTotals.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, total]) => ({ label: month, amount: total }));
 
   return (
     <div className="space-y-6">
@@ -67,8 +71,11 @@ export default async function DebtIssuancePage({ searchParams }: Props) {
       {/* Chart */}
       {result && result.data.length > 0 && chartData.length > 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold text-slate-600">Issuance by Period</h2>
-          <BarChartClient data={chartData} dataKey="amount" yLabel="Amount" />
+          <h2 className="mb-1 text-sm font-semibold text-slate-600">Issuance by Month</h2>
+          <p className="mb-4 text-xs text-slate-500">
+            Total amount raised each calendar month (all instruments aggregated)
+          </p>
+          <BarChartClient data={chartData} dataKey="amount" yLabel="₹ Crore" />
         </div>
       )}
 

@@ -44,10 +44,13 @@ class PublicFinanceService:
         sort_order: str,
         page: int,
         page_size: int,
+        state_code: str | None = None,
     ) -> ListResult:
         query = select(DebtPosition, DebtInstrument).join(DebtInstrument, DebtInstrument.id == DebtPosition.debt_instrument_id)
 
         conditions = []
+        if state_code:
+            conditions.append(DebtInstrument.issuer_state_code == state_code)
         if basis:
             conditions.append(DebtPosition.basis_tag == basis)
         if as_of:
@@ -100,10 +103,13 @@ class PublicFinanceService:
         sort_order: str,
         page: int,
         page_size: int,
+        state_code: str | None = None,
     ) -> ListResult:
         query = select(DebtEvent, DebtInstrument).join(DebtInstrument, DebtInstrument.id == DebtEvent.debt_instrument_id)
 
         conditions = [DebtEvent.event_type.in_(event_types)]
+        if state_code:
+            conditions.append(DebtInstrument.issuer_state_code == state_code)
         if basis:
             conditions.append(DebtEvent.basis_tag == basis)
         if start_date and end_date:
@@ -157,10 +163,23 @@ class PublicFinanceService:
         sort_order: str,
         page: int,
         page_size: int,
+        state_code: str | None = None,
     ) -> ListResult:
-        query = select(FiscalMetric).where(FiscalMetric.metric_group == metric_group)
+        # RBI xlsx metric groups are stored with sub-domain suffixes
+        # (deficit_fiscal / deficit_revenue, receipts_tax / receipts_non_tax /
+        # receipts_grants, expenditure_revenue / expenditure_capital, etc.).
+        # Match the API-facing group as a prefix so an exact equality on the
+        # legacy short name (e.g. "deficit") still returns all relevant rows.
+        query = select(FiscalMetric).where(
+            or_(
+                FiscalMetric.metric_group == metric_group,
+                FiscalMetric.metric_group.like(f"{metric_group}_%"),
+            )
+        )
 
-        conditions = []
+        conditions = [FiscalMetric.department_code.is_(None)]
+        if state_code:
+            conditions.append(FiscalMetric.state_code == state_code)
         if financial_year:
             conditions.append(FiscalMetric.fiscal_year == financial_year)
         if basis:
@@ -216,6 +235,7 @@ class PublicFinanceService:
         sort_order: str,
         page: int,
         page_size: int,
+        state_code: str | None = None,  # noqa: ARG002 — DepartmentSpending is AP-only today
     ) -> ListResult:
         query = select(DepartmentSpending)
 

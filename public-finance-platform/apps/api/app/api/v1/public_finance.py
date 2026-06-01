@@ -95,6 +95,7 @@ def _serve_list(
 )
 def debt_outstanding(
     response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code (AP, TN, KA, ...). Default: AP."),
     financial_year: str | None = Query(default=None, description="Financial year label, e.g. 2025-26"),
     basis: str | None = Query(default=None, description="Basis tag"),
     period_type: str | None = Query(default=None, description="Period type"),
@@ -120,6 +121,7 @@ def debt_outstanding(
 
     def provider():
         result = service.list_debt_outstanding(
+            state_code=state_code,
             financial_year=financial_year,
             basis=basis,
             start_date=start_date,
@@ -153,6 +155,7 @@ def debt_outstanding(
 @router.get("/debt/issues", response_model=ApiListResponse, summary="Debt issued", tags=["Debt"])
 def debt_issues(
     response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code (AP, TN, KA, ...). Default: AP."),
     financial_year: str | None = Query(default=None),
     basis: str | None = Query(default=None),
     period_type: str | None = Query(default=None),
@@ -173,6 +176,7 @@ def debt_issues(
     def provider():
         result = service.list_debt_events(
             event_types={DebtEventType.issue},
+            state_code=state_code,
             financial_year=financial_year,
             basis=basis,
             period_type=period_type,
@@ -193,6 +197,7 @@ def debt_issues(
 @router.get("/debt/pipeline", response_model=ApiListResponse, summary="Scheduled debt pipeline", tags=["Debt"])
 def debt_pipeline(
     response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code (AP, TN, KA, ...). Default: AP."),
     financial_year: str | None = Query(default=None),
     basis: str | None = Query(default=None),
     period_type: str | None = Query(default=None),
@@ -213,6 +218,7 @@ def debt_pipeline(
     def provider():
         result = service.list_debt_events(
             event_types={DebtEventType.notification},
+            state_code=state_code,
             financial_year=financial_year,
             basis=basis,
             period_type=period_type,
@@ -233,6 +239,7 @@ def debt_pipeline(
 @router.get("/debt/repayments", response_model=ApiListResponse, summary="Debt repayments and service", tags=["Debt"])
 def debt_repayments(
     response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code (AP, TN, KA, ...). Default: AP."),
     financial_year: str | None = Query(default=None),
     basis: str | None = Query(default=None),
     period_type: str | None = Query(default=None),
@@ -253,6 +260,7 @@ def debt_repayments(
     def provider():
         result = service.list_debt_events(
             event_types={DebtEventType.principal_due, DebtEventType.principal_paid, DebtEventType.coupon_due, DebtEventType.coupon_paid},
+            state_code=state_code,
             financial_year=financial_year,
             basis=basis,
             period_type=period_type,
@@ -270,9 +278,125 @@ def debt_repayments(
     return _serve_list(path="/debt/repayments", params=locals(), format=format, filename="debt-repayments.csv", provider=provider, response=response)
 
 
+@router.get("/debt/summary", summary="Debt summary — historical outstanding and borrowings breakdown", tags=["Debt"])
+def debt_summary(
+    response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code. Default: AP."),
+    db: Session = Depends(get_db),
+):
+    """Returns:
+    - historical total_outstanding_liabilities by fiscal year (from budget data)
+    - latest year's key metrics (borrowings raised, repayments, loans from centre, interest)
+    """
+    from sqlalchemy import text
+
+    rows = db.execute(
+        text("""
+            SELECT metric_code, fiscal_year, value
+            FROM fiscal_metrics
+            WHERE state_code = :state_code
+              AND department_code IS NULL
+              AND metric_code IN (
+                'total_outstanding_liabilities',
+                'market_borrowings_gross_raised',
+                'market_borrowings_repayments',
+                'loans_from_centre_gross',
+                'loans_from_centre_net',
+                'interest_payments_gross',
+                'interest_payments_net'
+            )
+            ORDER BY metric_code, fiscal_year
+        """),
+        {"state_code": state_code},
+    ).fetchall()
+
+    # Build structured response
+    outstanding: list[dict] = []
+    breakdown: dict[str, list] = {}
+
+    for r in rows:
+        code, fy, val = r.metric_code, r.fiscal_year, float(r.value)
+        if code == "total_outstanding_liabilities":
+            outstanding.append({"fiscal_year": fy, "value": val})
+        else:
+            if code not in breakdown:
+                breakdown[code] = []
+            breakdown[code].append({"fiscal_year": fy, "value": val})
+
+    # Year-over-year increase
+    yoy: list[dict] = []
+    for i in range(1, len(outstanding)):
+        prev = outstanding[i - 1]
+        curr = outstanding[i]
+        increase = curr["value"] - prev["value"]
+        yoy.append({
+            "fiscal_year": curr["fiscal_year"],
+            "outstanding": curr["value"],
+            "increase": round(increase, 2),
+            "increase_pct": round((increase / prev["value"]) * 100, 2) if prev["value"] else 0,
+        })
+
+    latest = outstanding[-1] if outstanding else None
+
+    response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600"
+    return {
+        "current_outstanding": latest,
+        "historical_outstanding": outstanding,
+        "year_over_year": yoy,
+        "breakdown": breakdown,
+    }
+
+
+@router.get("/debt/maturity-schedule", summary="SDL maturity schedule from Outstanding Securities", tags=["Debt"])
+def debt_maturity_schedule(
+    response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code. Default: AP."),
+    db: Session = Depends(get_db),
+):
+    """Returns upcoming SDL principal repayments grouped by fiscal year, derived from outstanding securities data."""
+    from sqlalchemy import text
+
+    rows = db.execute(
+        text("""
+            SELECT
+              CASE
+                WHEN EXTRACT(MONTH FROM di.maturity_date) >= 4
+                THEN EXTRACT(YEAR FROM di.maturity_date)::text || '-' ||
+                     LPAD(((EXTRACT(YEAR FROM di.maturity_date) + 1)::int % 100)::text, 2, '0')
+                ELSE (EXTRACT(YEAR FROM di.maturity_date) - 1)::text || '-' ||
+                     LPAD((EXTRACT(YEAR FROM di.maturity_date)::int % 100)::text, 2, '0')
+              END AS fiscal_year,
+              SUM(dp.outstanding_principal) AS principal_due,
+              COUNT(di.id) AS instrument_count
+            FROM debt_instruments di
+            JOIN debt_positions dp ON di.id = dp.debt_instrument_id
+            WHERE di.maturity_date IS NOT NULL
+              AND di.maturity_date >= CURRENT_DATE
+              AND di.issuer_state_code = :state_code
+            GROUP BY 1
+            ORDER BY 1
+        """),
+        {"state_code": state_code},
+    ).fetchall()
+
+    schedule = [
+        {
+            "fiscal_year": r.fiscal_year,
+            "principal_due": float(r.principal_due),
+            "instrument_count": r.instrument_count,
+        }
+        for r in rows
+        if r.principal_due and float(r.principal_due) > 0
+    ]
+
+    response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600"
+    return {"schedule": schedule, "total": sum(s["principal_due"] for s in schedule)}
+
+
 @router.get("/fiscal/receipts", response_model=ApiListResponse, summary="Fiscal receipts", tags=["Fiscal"])
 def fiscal_receipts(
     response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code (AP, TN, KA, ...). Default: AP."),
     financial_year: str | None = Query(default=None),
     basis: str | None = Query(default=None),
     period_type: str | None = Query(default=None),
@@ -291,6 +415,7 @@ def fiscal_receipts(
     def provider():
         result = service.list_fiscal_metrics(
             metric_group="receipts",
+            state_code=state_code,
             financial_year=financial_year,
             basis=basis,
             period_type=period_type,
@@ -311,6 +436,7 @@ def fiscal_receipts(
 @router.get("/fiscal/expenditure", response_model=ApiListResponse, summary="Fiscal expenditure", tags=["Fiscal"])
 def fiscal_expenditure(
     response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code (AP, TN, KA, ...). Default: AP."),
     financial_year: str | None = Query(default=None),
     basis: str | None = Query(default=None),
     period_type: str | None = Query(default=None),
@@ -329,6 +455,7 @@ def fiscal_expenditure(
     def provider():
         result = service.list_fiscal_metrics(
             metric_group="expenditure",
+            state_code=state_code,
             financial_year=financial_year,
             basis=basis,
             period_type=period_type,
@@ -349,6 +476,7 @@ def fiscal_expenditure(
 @router.get("/fiscal/deficits", response_model=ApiListResponse, summary="Fiscal deficits", tags=["Fiscal"])
 def fiscal_deficits(
     response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code (AP, TN, KA, ...). Default: AP."),
     financial_year: str | None = Query(default=None),
     basis: str | None = Query(default=None),
     period_type: str | None = Query(default=None),
@@ -367,6 +495,7 @@ def fiscal_deficits(
     def provider():
         result = service.list_fiscal_metrics(
             metric_group="deficit",
+            state_code=state_code,
             financial_year=financial_year,
             basis=basis,
             period_type=period_type,
@@ -387,6 +516,7 @@ def fiscal_deficits(
 @router.get("/departments/spending", response_model=ApiListResponse, summary="Department spending", tags=["Departments"])
 def department_spending(
     response: Response,
+    state_code: str = Query(default="AP", description="State 2-letter code (AP, TN, KA, ...). Default: AP."),
     financial_year: str | None = Query(default=None),
     basis: str | None = Query(default=None),
     period_type: str | None = Query(default=None),
@@ -404,6 +534,7 @@ def department_spending(
 
     def provider():
         result = service.list_department_spending(
+            state_code=state_code,
             financial_year=financial_year,
             basis=basis,
             department=department,

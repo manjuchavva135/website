@@ -63,6 +63,7 @@ class MetricSeries(Base):
     title: Mapped[str] = mapped_column(String(300))
     metric_group: Mapped[str] = mapped_column(String(60), index=True)
     unit: Mapped[str] = mapped_column(String(40), default="INR crore")
+    state_code: Mapped[str] = mapped_column(String(8), nullable=False, default="AP", server_default="AP", index=True)
     description: Mapped[str] = mapped_column(Text)
 
     observations: Mapped[list[MetricObservation]] = relationship(back_populates="series", cascade="all, delete")

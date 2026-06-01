@@ -284,6 +284,7 @@ class DebtInstrument(Base):
         Index("ix_debt_instruments_maturity_date", "maturity_date"),
         Index("ix_debt_instruments_issuer", "issuer_name"),
         Index("ix_debt_instruments_active", "is_active"),
+        Index("ix_debt_instruments_issuer_state", "issuer_state_code"),
     )
 
     id: Mapped[int] = mapped_column(SqliteBigInteger, primary_key=True, autoincrement=True)
@@ -292,6 +293,7 @@ class DebtInstrument(Base):
     isin: Mapped[str | None] = mapped_column(String(32), nullable=True)
     instrument_name: Mapped[str] = mapped_column(String(300), nullable=False)
     issuer_name: Mapped[str] = mapped_column(String(200), nullable=False)
+    issuer_state_code: Mapped[str | None] = mapped_column(String(8), nullable=True)
     instrument_type: Mapped[str] = mapped_column(String(80), nullable=False)
     currency: Mapped[str] = mapped_column(String(10), nullable=False, default="INR")
     coupon_rate: Mapped[Decimal | None] = mapped_column(Numeric(10, 4), nullable=True)
@@ -365,15 +367,17 @@ class FiscalMetric(Base):
     __tablename__ = "fiscal_metrics"
     __table_args__ = (
         UniqueConstraint(
-            "metric_code", "period_start", "period_end", "basis_tag", "department_code",
+            "state_code", "metric_code", "period_start", "period_end", "basis_tag", "department_code",
             name="uq_fiscal_metrics_natural_key"
         ),
         Index("ix_fiscal_metrics_metric_period_basis", "metric_code", "period_start", "basis_tag"),
         Index("ix_fiscal_metrics_department", "department_code"),
         Index("ix_fiscal_metrics_fiscal_year", "fiscal_year"),
+        Index("ix_fiscal_metrics_state_metric_year", "state_code", "metric_code", "fiscal_year"),
     )
 
     id: Mapped[int] = mapped_column(SqliteBigInteger, primary_key=True, autoincrement=True)
+    state_code: Mapped[str] = mapped_column(String(8), nullable=False, default="AP", server_default="AP")
     metric_code: Mapped[str] = mapped_column(String(100), nullable=False)
     metric_name: Mapped[str] = mapped_column(String(300), nullable=False)
     metric_group: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -383,6 +387,7 @@ class FiscalMetric(Base):
     period_end: Mapped[date] = mapped_column(Date, nullable=False)
     value: Mapped[Decimal] = mapped_column(Numeric(20, 2), nullable=False)
     unit: Mapped[str] = mapped_column(String(40), nullable=False, default="INR crore")
+    unit_scale: Mapped[str] = mapped_column(String(20), nullable=False, default="inr_crore", server_default="inr_crore")
     department_code: Mapped[str | None] = mapped_column(String(40), nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 

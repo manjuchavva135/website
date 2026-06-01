@@ -14,7 +14,11 @@ function isBrowserLocalhost(): boolean {
 
 function usesSameOriginApiService(): boolean {
   if (explicitApiBaseUrl()) return false;
-  if (typeof window !== "undefined") return !isBrowserLocalhost();
+  // The Next.js server rewrites /api/v1/:path* to the FastAPI backend in dev
+  // and production alike, so the client should always call same-origin when no
+  // explicit base URL is set. This makes the site work identically over
+  // localhost, ngrok, and Vercel without per-environment CORS surprises.
+  if (typeof window !== "undefined") return true;
   return Boolean(process.env.VERCEL_URL);
 }
 

@@ -1,4 +1,15 @@
-"""Parser for the RBI 'State Finances: A Study of Budgets of 2025-26' statements.
+"""DEPRECATED: Use `worker.state_finances_xlsx` instead.
+
+This PDF-based parser has been superseded by the xlsx-based ingestion pipeline
+in `apps/worker/worker/state_finances_xlsx/`. The xlsx loader produces richer
+data (all 28 states, more fiscal years, per-instrument SDL detail) from the
+official RBI State Finances xlsx tables in `Data_website/state_government_dataset/`.
+
+This file is retained for reference only and will be removed in a future cleanup.
+
+----
+
+Parser for the RBI 'State Finances: A Study of Budgets of 2025-26' statements.
 
 Each PDF in this dataset is one Statement (or Appendix) covering all states
 across multiple fiscal years. This parser detects the statement type from

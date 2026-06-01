@@ -16,9 +16,175 @@ export interface ApiListResponse {
   sort: { by: string; order: string };
 }
 
+export interface DebtDataPoint {
+  fiscal_year: string;
+  value: number;
+}
+
+export interface DebtYoYPoint {
+  fiscal_year: string;
+  outstanding: number;
+  increase: number;
+  increase_pct: number;
+}
+
+export interface DebtSummaryResponse {
+  current_outstanding: DebtDataPoint | null;
+  historical_outstanding: DebtDataPoint[];
+  year_over_year: DebtYoYPoint[];
+  breakdown: Record<string, DebtDataPoint[]>;
+}
+
+export interface DebtMaturityPoint {
+  fiscal_year: string;
+  principal_due: number;
+  instrument_count: number;
+}
+
+export interface DebtMaturityResponse {
+  schedule: DebtMaturityPoint[];
+  total: number;
+}
+
+// ─── State Overview shapes (Phase 2 redesign) ─────────────────────────────────
+
+export interface HeadlineMetric {
+  metric_code: string;
+  label: string;
+  metric_name?: string;
+  value: number | null;
+  unit?: string;
+  unit_scale?: string;
+  basis_tag?: string;
+  fiscal_year?: string;
+  period_start?: string;
+  period_end?: string;
+}
+
+export interface HeadlineResponse {
+  state_code: string;
+  metrics: HeadlineMetric[];
+  derived: Record<string, number>;
+}
+
+export interface DebtCompositionComponent {
+  metric_code: string;
+  label: string;
+  value: number | null;
+  basis_tag: string;
+}
+
+export interface DebtCompositionResponse {
+  state_code: string;
+  fiscal_year: string | null;
+  total: number | null;
+  components: DebtCompositionComponent[];
+}
+
+export interface MaturityProfilePoint {
+  fiscal_year: string;
+  principal_due: number | null;
+  pct_of_total: number | null;
+}
+
+export interface MaturityProfileResponse {
+  state_code: string;
+  schedule: MaturityProfilePoint[];
+  total_principal: number;
+}
+
+export interface DebtStackInstrument {
+  isin: string;
+  nomenclature: string;
+  issuer_name: string;
+  issuer_state_code: string | null;
+  coupon_rate: number | null;
+  issue_date: string | null;
+  maturity_date: string | null;
+  years_to_maturity: number | null;
+  outstanding_principal: number | null;
+  as_of_date: string | null;
+}
+
+export interface DebtStackAggregates {
+  total_instruments: number;
+  total_outstanding_inr_crore: number | null;
+  weighted_average_coupon: number | null;
+  earliest_maturity: string | null;
+  latest_maturity: string | null;
+}
+
+export interface DebtStackResponse {
+  data: DebtStackInstrument[];
+  pagination: { page: number; page_size: number; total: number };
+  sort: { by: string; order: string };
+  filters_applied: Record<string, unknown>;
+  aggregates_for_state: DebtStackAggregates;
+}
+
+export interface DebtStackFilters {
+  state_code?: string;
+  maturity_after?: string;
+  maturity_before?: string;
+  coupon_min?: number;
+  coupon_max?: number;
+  search?: string;
+  page?: number;
+  page_size?: number;
+  sort_by?: "maturity_date" | "issue_date" | "coupon_rate" | "outstanding_principal" | "nomenclature";
+  sort_order?: "asc" | "desc";
+}
+
+export interface PeerSnapshotRow {
+  state_code: string;
+  metric_code: string;
+  metric_name: string;
+  value: number | null;
+  unit: string;
+  unit_scale: string;
+  basis_tag: string;
+  fiscal_year: string;
+  period_start: string;
+  period_end: string;
+}
+
+export interface PeerSnapshotResponse {
+  metric_code: string;
+  fiscal_year: string;
+  states_requested: string[];
+  data: PeerSnapshotRow[];
+}
+
+export interface PeerSeriesPoint {
+  fiscal_year: string;
+  value: number | null;
+  basis_tag: string;
+}
+
+export interface PeerSeriesResponse {
+  metric_code: string;
+  metric_name: string;
+  unit_scale: string;
+  states_requested: string[];
+  series: Record<string, PeerSeriesPoint[]>;
+}
+
+export interface PeerMetricCatalogEntry {
+  metric_code: string;
+  metric_name: string;
+  metric_group: string;
+  unit_scale: string;
+  state_count: number;
+}
+
+export interface PeerMetricCatalogResponse {
+  metrics: PeerMetricCatalogEntry[];
+}
+
 // ─── Filter shapes ─────────────────────────────────────────────────────────────
 
 export interface CommonFilters {
+  state_code?: string;
   financial_year?: string;
   basis?: string;
   period_type?: string;
@@ -72,6 +238,39 @@ export const api = {
       apiFetch<ApiListResponse>("/api/v1/debt/pipeline", f as FetchParams),
     repayments: (f: CommonFilters = {}) =>
       apiFetch<ApiListResponse>("/api/v1/debt/repayments", f as FetchParams),
+    summary: (state_code = "AP") =>
+      apiFetch<DebtSummaryResponse>("/api/v1/debt/summary", { state_code }),
+    maturitySchedule: (state_code = "AP") =>
+      apiFetch<DebtMaturityResponse>("/api/v1/debt/maturity-schedule", { state_code }),
+    stack: (filters: DebtStackFilters = {}) =>
+      apiFetch<DebtStackResponse>("/api/v1/debt/stack", filters as FetchParams),
+  },
+
+  ap: {
+    headline: (state_code = "AP") =>
+      apiFetch<HeadlineResponse>("/api/v1/ap/headline", { state_code }),
+    debtComposition: (state_code = "AP", fiscal_year?: string) =>
+      apiFetch<DebtCompositionResponse>(
+        "/api/v1/ap/debt-composition",
+        fiscal_year ? { state_code, fiscal_year } : { state_code }
+      ),
+    maturityProfile: (state_code = "AP") =>
+      apiFetch<MaturityProfileResponse>("/api/v1/ap/maturity-profile", { state_code }),
+  },
+
+  peers: {
+    compareSnapshot: (metric_code: string, states: string[], fiscal_year: string, basis?: string) =>
+      apiFetch<PeerSnapshotResponse>(
+        `/api/v1/peer-comparison/${encodeURIComponent(metric_code)}`,
+        { states: states.join(","), fiscal_year, ...(basis ? { basis } : {}) }
+      ),
+    compareSeries: (metric_code: string, states: string[], basis?: string) =>
+      apiFetch<PeerSeriesResponse>(
+        `/api/v1/peer-comparison/${encodeURIComponent(metric_code)}`,
+        { states: states.join(","), ...(basis ? { basis } : {}) }
+      ),
+    metricCatalog: () =>
+      apiFetch<PeerMetricCatalogResponse>("/api/v1/peer-comparison/_metrics/catalog"),
   },
 
   fiscal: {

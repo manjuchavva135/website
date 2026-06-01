@@ -2,7 +2,42 @@
   "permissions": {
     "allow": [
       "PowerShell(cd \"c:\\\\Users\\\\wicon_user\\\\Downloads\\\\website\"; Get-Content graphify-out\\\\.graphify_uncached.txt | Where-Object { $_ -match '\\\\.\\(md|txt|html|pdf\\)$' })",
-      "PowerShell(if \\(-not \\(Test-Path \"C:\\\\Users\\\\wicon_user\\\\Downloads\\\\website\\\\graphify-out\"\\)\\) { New-Item -ItemType Directory -Path \"C:\\\\Users\\\\wicon_user\\\\Downloads\\\\website\\\\graphify-out\" })"
+      "PowerShell(if \\(-not \\(Test-Path \"C:\\\\Users\\\\wicon_user\\\\Downloads\\\\website\\\\graphify-out\"\\)\\) { New-Item -ItemType Directory -Path \"C:\\\\Users\\\\wicon_user\\\\Downloads\\\\website\\\\graphify-out\" })",
+      "Bash(xargs python3 -m py_compile)",
+      "Bash(python3 -c ' *)",
+      "Bash(pip install *)",
+      "Bash(pg_isready -h localhost -p 5432)",
+      "Bash(sudo -n true)",
+      "Bash(PGPASSWORD=public_finance psql -h localhost -U public_finance -d public_finance -c \"SELECT version_num FROM alembic_version\")",
+      "Bash(PGPASSWORD=public_finance psql -h localhost -U public_finance -d public_finance -c \"\\\\dt\")",
+      "Bash(pip show *)",
+      "Bash(/home/maveric2/website/public-finance-platform/.venv/bin/pip install *)",
+      "Bash(/home/maveric2/website/public-finance-platform/.venv/bin/alembic upgrade *)",
+      "Bash(PGPASSWORD=public_finance psql -h localhost -U public_finance -d public_finance -c \"\\\\d fiscal_metrics\")",
+      "Bash(grep -c \"    response: Response,$\" /home/maveric2/website/public-finance-platform/apps/api/app/api/v1/public_finance.py)",
+      "Bash(curl -s http://localhost:8000/api/v1/health)",
+      "Bash(curl -sS http://localhost:8000/api/v1/ap/headline)",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -sS http://localhost:8000/api/v1/ap/debt-composition)",
+      "Bash(curl -sS \"http://localhost:8000/api/v1/ap/maturity-profile\")",
+      "Bash(curl -sS \"http://localhost:8000/api/v1/debt/stack?page_size=3\")",
+      "Bash(curl -sS \"http://localhost:8000/api/v1/peer-comparison/total_outstanding_liabilities?states=AP,TN,KA,TS,MH&fiscal_year=2025-26\")",
+      "Bash(curl -sS \"http://localhost:8000/api/v1/peer-comparison/_metrics/catalog\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'metrics: {len\\(d[\\\\\"metrics\\\\\"]\\)}'\\); [print\\(f'  {m[\\\\\"metric_code\\\\\"]} \\({m[\\\\\"unit_scale\\\\\"]}\\): {m[\\\\\"state_count\\\\\"]} states'\\) for m in d['metrics'][:6]]\")",
+      "Bash(curl -sS \"http://localhost:8000/api/v1/debt/outstanding?state_code=TN&page_size=2\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'total={d[\\\\\"pagination\\\\\"][\\\\\"total\\\\\"]} rows'\\); [print\\(f'  {r[\\\\\"instrument_code\\\\\"]} {r[\\\\\"instrument_name\\\\\"][:50]}: {r[\\\\\"outstanding_principal\\\\\"]}'\\) for r in d['data']]\")",
+      "Read(//tmp/**)",
+      "Bash(PGPASSWORD=public_finance psql -h localhost -U public_finance -d public_finance -c \"SELECT issuer_state_code, COUNT\\(*\\) FROM debt_instruments GROUP BY 1 ORDER BY 2 DESC LIMIT 10\")",
+      "Bash(/home/maveric2/website/.xlsx_venv/bin/python3 -c ' *)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:8000/api/v1/health)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(f'  {r[\\\\\"state_code\\\\\"]}: ₹{r[\\\\\"value\\\\\"]:,.0f} cr'\\) for r in d['data']]\")",
+      "Bash(curl -sS \"http://localhost:8000/api/v1/peer-comparison/total_outstanding_liabilities_pct_gsdp?states=AP,TN,KA\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(f'  {sc}: {len\\(v\\)} years; latest={v[-1] if v else \\\\\"-\\\\\"}'\\) for sc,v in d['series'].items\\(\\)]\")",
+      "Bash(curl -sS \"http://localhost:8000/api/v1/debt/stack?state_code=TN&page_size=2&sort_by=outstanding_principal&sort_order=desc\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'TN: {d[\\\\\"pagination\\\\\"][\\\\\"total\\\\\"]} instruments, ₹{d[\\\\\"aggregates_for_state\\\\\"][\\\\\"total_outstanding_inr_crore\\\\\"]:,.0f} cr total'\\); [print\\(f'  {r[\\\\\"isin\\\\\"]} {r[\\\\\"nomenclature\\\\\"]} ₹{r[\\\\\"outstanding_principal\\\\\"]} cr \\({r[\\\\\"coupon_rate\\\\\"]}%\\)'\\) for r in d['data']]\")",
+      "Bash(PGPASSWORD=public_finance psql -h localhost -U public_finance -d public_finance)",
+      "Bash(PGPASSWORD=public_finance psql -h localhost -U public_finance -d public_finance -c \"SELECT state_code, COUNT\\(*\\) FROM fiscal_metrics WHERE state_code IN \\('AP','TS','TN','KA','MH'\\) GROUP BY 1 ORDER BY 1\")",
+      "Bash(pnpm tsc *)"
     ]
   }
 }

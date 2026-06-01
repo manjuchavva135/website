@@ -3,10 +3,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1.ap_overview import router as ap_overview_router
 from app.api.v1.changelog import router as changelog_router
+from app.api.v1.debt_stack import router as debt_stack_router
 from app.api.v1.health import router as health_router
 from app.api.v1.metrics import router as metrics_router
 from app.api.v1.ops import router as ops_router
+from app.api.v1.peers import router as peers_router
 from app.api.v1.provenance import router as provenance_router
 from app.api.v1.public_finance import router as public_finance_router
 from app.api.v1.review import router as review_router
@@ -39,6 +42,9 @@ app.include_router(health_router, prefix=api_prefix)
 app.include_router(metrics_router, prefix=api_prefix)
 app.include_router(ops_router, prefix=api_prefix)
 app.include_router(public_finance_router, prefix=api_prefix)
+app.include_router(ap_overview_router, prefix=api_prefix)
+app.include_router(debt_stack_router, prefix=api_prefix)
+app.include_router(peers_router, prefix=api_prefix)
 app.include_router(provenance_router, prefix=api_prefix)
 app.include_router(review_router, prefix=api_prefix)
 app.include_router(changelog_router, prefix=api_prefix)
