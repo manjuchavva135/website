@@ -58,9 +58,9 @@ export default function AdminScraperPage() {
   return (
     <AdminCard eyebrow="Ingestion" title="RBI press-release scraper">
       <p className="mb-4 text-sm text-slate-600">
-        Scrapes the RBI press release page for new "Auction of State Government
-        Securities" PDFs and ingests any rows for Andhra Pradesh. Runs Tue/Fri
-        at 03:00 UTC; trigger manually below.
+        Scrapes the RBI press release page for new &ldquo;Auction of State
+        Government Securities&rdquo; PDFs and ingests any rows for Andhra
+        Pradesh. Runs Tue/Fri at 03:00 UTC; trigger manually below.
       </p>
 
       {banner.kind === "ok" && (

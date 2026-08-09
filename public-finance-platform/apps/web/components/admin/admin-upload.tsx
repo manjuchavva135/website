@@ -139,7 +139,9 @@ export function AdminUploadView() {
         <div>
           <label className="block text-sm font-semibold text-slate-700">
             Source name
-            <span className="ml-1 font-normal text-slate-400">e.g. "RBI SDL Auction Apr 2024"</span>
+            <span className="ml-1 font-normal text-slate-400">
+              e.g. &ldquo;RBI SDL Auction Apr 2024&rdquo;
+            </span>
           </label>
           <input
             type="text"

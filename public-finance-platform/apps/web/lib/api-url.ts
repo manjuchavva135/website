@@ -8,11 +8,24 @@ function explicitApiBaseUrl(): string | undefined {
   return value ? value.replace(/\/$/, "") : undefined;
 }
 
+/**
+ * Server-only override. `NEXT_PUBLIC_API_BASE_URL` is written for the browser
+ * (e.g. `http://localhost:8000`), which resolves to the web container itself
+ * during server rendering. `INTERNAL_API_BASE_URL` lets the server reach the
+ * API over the container network instead (e.g. `http://api:8000`).
+ */
+function internalApiBaseUrl(): string | undefined {
+  if (typeof window !== "undefined") return undefined;
+  const value = process.env.INTERNAL_API_BASE_URL?.trim();
+  return value ? value.replace(/\/$/, "") : undefined;
+}
+
 function isBrowserLocalhost(): boolean {
   return typeof window !== "undefined" && LOCAL_HOSTS.has(window.location.hostname);
 }
 
 function usesSameOriginApiService(): boolean {
+  if (internalApiBaseUrl()) return false;
   if (explicitApiBaseUrl()) return false;
   if (typeof window !== "undefined") return !isBrowserLocalhost();
   return Boolean(process.env.VERCEL_URL);
@@ -25,6 +38,9 @@ function runtimeOrigin(): string {
 }
 
 export function apiBaseUrl(): string {
+  const internal = internalApiBaseUrl();
+  if (internal) return internal;
+
   const explicit = explicitApiBaseUrl();
   if (explicit) return explicit;
   if (usesSameOriginApiService()) return runtimeOrigin();
